@@ -1,2 +1,0 @@
-# fremis-ai
-Intelligence to ∞
