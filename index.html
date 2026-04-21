@@ -1,123 +1,775 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>fremis.ai — Intelligence to ∞</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>fremis.ai — Intelligence to ∞</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0a0d14;
+  --bg2:     #111520;
+  --bg3:     #161b28;
+  --bg4:     #1c2333;
+  --border:  rgba(255,255,255,0.07);
+  --blue:    #4a9eff;
+  --blue-dim:rgba(74,158,255,0.12);
+  --text:    #e8eaf0;
+  --text2:   #8892a4;
+  --text3:   #4a5468;
+  --radius:  12px;
+  --radius-sm:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;}
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+/* ── LAYOUT ── */
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh;position:relative;overflow:hidden;}
 
-    body {
-      background: #080c14;
-      color: #e8eaf0;
-      font-family: 'Space Grotesk', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
+/* ── TOPBAR ── */
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg);z-index:10;flex-shrink:0;}
+.top-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);background:var(--bg3);border:1px solid var(--border);cursor:pointer;flex-shrink:0;}
+.top-btn svg{width:16px;height:16px;fill:var(--text2);}
+#secondary-trigger{display:flex;align-items:center;gap:6px;cursor:pointer;padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);}
+#secondary-trigger .label{font-size:13px;color:var(--text2);font-weight:500;letter-spacing:0.01em;white-space:nowrap;}
+#secondary-trigger .inf{color:var(--blue);}
+#chevron{width:14px;height:14px;stroke:var(--text3);transition:transform 0.25s;fill:none;}
+#chevron.open{transform:rotate(180deg);}
+#new-chat-btn{background:var(--blue);border-color:var(--blue);}
+#new-chat-btn svg{fill:white;}
 
-    .bg {
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse 60% 50% at 20% 50%, rgba(30, 80, 160, 0.15) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 60% at 80% 50%, rgba(80, 30, 160, 0.10) 0%, transparent 70%);
-      pointer-events: none;
-    }
+/* ── READING AREA ── */
+#reading-area{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scrollbar-width:none;}
+#reading-area::-webkit-scrollbar{display:none;}
 
-    .container {
-      text-align: center;
-      padding: 2rem;
-      position: relative;
-      z-index: 1;
-    }
+/* Welcome */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px;padding:40px 24px;text-align:center;}
+.welcome-logo{font-size:30px;font-weight:600;color:white;letter-spacing:-0.02em;}
+.welcome-logo span{color:var(--blue);}
+.welcome-tagline{font-size:12px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;}
+.welcome-desc{font-size:14px;color:var(--text2);line-height:1.6;max-width:280px;opacity:0;transition:opacity 0.8s ease;min-height:48px;}
+.welcome-desc.visible{opacity:1;}
 
-    .logo {
-      font-size: clamp(2.8rem, 8vw, 5rem);
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: #ffffff;
-      margin-bottom: 0.4rem;
-    }
+/* Messages */
+.msg{display:flex;flex-direction:column;gap:6px;animation:fadeUp 0.3s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.msg-user{align-items:flex-end;}
+.msg-user .bubble{background:var(--blue);color:white;padding:10px 14px;border-radius:18px 18px 4px 18px;font-size:14px;max-width:82%;line-height:1.5;}
+.msg-system{align-items:flex-start;}
+.msg-system .bubble{background:var(--bg3);border:1px solid var(--border);padding:10px 14px;border-radius:4px 18px 18px 18px;font-size:14px;max-width:94%;line-height:1.5;}
 
-    .logo span {
-      color: #4a9eff;
-    }
+/* Processing */
+.ai-process{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:2px;}
+.ai-process-title{font-size:10px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;font-weight:500;margin-bottom:8px;}
+.ai-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);}
+.ai-row:last-child{border-bottom:none;}
+.ai-row-icon{width:22px;height:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.ai-row-icon img{width:16px;height:16px;opacity:0.7;}
+.ai-name{font-size:12px;font-family:'DM Mono',monospace;color:var(--text2);flex:1;}
+.ai-status{font-size:11px;color:var(--text3);}
+.ai-status.done{color:var(--blue);}
+.ai-spinner{width:10px;height:10px;border:1.5px solid var(--text3);border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ai-snippet{font-size:12px;color:var(--text2);font-style:italic;padding:4px 0 4px 32px;line-height:1.4;border-bottom:1px solid var(--border);}
+.ai-snippet:last-child{border-bottom:none;}
 
-    .tagline {
-      font-size: clamp(1rem, 3vw, 1.4rem);
-      font-weight: 300;
-      color: #8892a4;
-      letter-spacing: 0.05em;
-      margin-bottom: 3rem;
-    }
+/* Consolidated */
+.consolidated{background:var(--bg2);border:1px solid rgba(74,158,255,0.2);border-radius:var(--radius);padding:14px;}
+.consolidated-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.consolidated-hdr .dot{width:6px;height:6px;background:var(--blue);border-radius:50%;}
+.consolidated-hdr span{font-size:10px;color:var(--blue);letter-spacing:0.08em;text-transform:uppercase;font-weight:500;}
+.consolidated-text{font-size:14px;line-height:1.6;color:var(--text);}
+.consensus-bar{margin-top:12px;display:flex;align-items:center;gap:8px;}
+.c-label{font-size:11px;color:var(--text3);}
+.bar-track{flex:1;height:2px;background:var(--border);border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;background:var(--blue);border-radius:2px;transition:width 0.8s ease;width:0%;}
+.c-pct{font-size:11px;color:var(--blue);font-family:'DM Mono',monospace;}
 
-    .infinity {
-      color: #4a9eff;
-      font-size: 1.2em;
-    }
+/* ── WRITING AREA ── */
+#writing-area{padding:10px 16px 18px;border-top:1px solid var(--border);background:var(--bg);flex-shrink:0;}
+.input-row{display:flex;align-items:flex-end;gap:8px;}
+#plus-btn{width:36px;height:36px;min-width:36px;border-radius:var(--radius-sm);background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+#plus-btn svg{width:16px;height:16px;stroke:var(--text2);fill:none;}
+#input-wrap{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:18px;padding:10px 14px;display:flex;align-items:flex-end;gap:8px;transition:border-color 0.2s;}
+#input-wrap:focus-within{border-color:rgba(74,158,255,0.35);}
+#user-input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;resize:none;max-height:120px;line-height:1.5;}
+#user-input::placeholder{color:var(--text3);}
+#send-btn{width:30px;height:30px;min-width:30px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0.4;transition:opacity 0.2s;}
+#send-btn.active{opacity:1;}
+#send-btn svg{width:13px;height:13px;fill:white;}
+.extra-icons{display:flex;justify-content:center;gap:24px;margin-top:8px;}
+.extra-icon{opacity:0.3;cursor:pointer;}
+.extra-icon svg{width:18px;height:18px;fill:var(--text2);}
 
-    .divider {
-      width: 40px;
-      height: 1px;
-      background: rgba(74, 158, 255, 0.3);
-      margin: 0 auto 3rem;
-    }
+/* ── SECONDARY MENU ── */
+#secondary-menu{position:absolute;top:57px;left:0;right:0;bottom:73px;background:var(--bg);border-bottom:1px solid var(--border);z-index:9;display:none;flex-direction:column;overflow-y:auto;scrollbar-width:none;}
+#secondary-menu.open{display:flex;}
+#secondary-menu::-webkit-scrollbar{display:none;}
 
-    .coming-soon {
-      font-size: clamp(0.75rem, 2vw, 0.85rem);
-      font-weight: 400;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: #4a9eff;
-      opacity: 0.7;
-    }
+.block{margin:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.block-header{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--border);}
+.block-title{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;}
 
-    .dots {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      margin-top: 2.5rem;
-    }
+/* toggle */
+.toggle{width:38px;height:21px;background:var(--bg4);border:1px solid var(--border);border-radius:11px;cursor:pointer;position:relative;transition:background 0.2s,border-color 0.2s;flex-shrink:0;}
+.toggle.on{background:var(--blue);border-color:var(--blue);}
+.toggle-thumb{position:absolute;top:2px;left:2px;width:15px;height:15px;background:white;border-radius:50%;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3);}
+.toggle.on .toggle-thumb{left:19px;}
 
-    .dot {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: #4a9eff;
-      opacity: 0.3;
-      animation: pulse 2s ease-in-out infinite;
-    }
+/* Block 1 */
+#garden-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;}
+#garden-toggle-row label{font-size:13px;color:var(--text2);}
+#garden-text-wrap{padding:0 14px 14px;}
+#garden-text{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;resize:none;height:80px;outline:none;line-height:1.5;}
+#garden-text:disabled{opacity:0.35;cursor:not-allowed;}
+#garden-text:not(:disabled){color:var(--text);border-color:rgba(74,158,255,0.3);}
 
-    .dot:nth-child(2) { animation-delay: 0.3s; }
-    .dot:nth-child(3) { animation-delay: 0.6s; }
+/* Block 2 */
+.b2-section{padding:10px 14px;border-bottom:1px solid var(--border);}
+.b2-section:last-child{border-bottom:none;}
+.b2-label{font-size:11px;color:var(--text3);letter-spacing:0.05em;margin-bottom:6px;}
+.b2-select{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;width:100%;cursor:pointer;-webkit-appearance:none;}
+.b2-select:focus{border-color:rgba(74,158,255,0.35);}
+.ai-slots{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.ai-slot{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;display:flex;align-items:center;gap:7px;cursor:pointer;}
+.ai-slot img{width:14px;height:14px;opacity:0.6;flex-shrink:0;}
+.ai-slot span{font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ai-slot.active{border-color:rgba(74,158,255,0.3);}
+.plus-slot{border-style:dashed;justify-content:center;}
+.plus-slot span{color:var(--text3);}
+.iter-row{display:flex;gap:6px;}
+.iter-btn{flex:1;padding:7px 4px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);text-align:center;font-size:12px;color:var(--text2);cursor:pointer;transition:all 0.15s;font-family:'DM Mono',monospace;}
+.iter-btn.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue);}
+.disc-row{display:flex;align-items:center;justify-content:space-between;}
+.disc-info .disc-name{font-size:13px;color:var(--text2);}
+.disc-info .disc-sub{font-size:11px;color:var(--text3);margin-top:2px;}
 
-    @keyframes pulse {
-      0%, 100% { opacity: 0.2; transform: scale(1); }
-      50% { opacity: 0.8; transform: scale(1.3); }
-    }
-  </style>
+/* ── MAIN MENU ── */
+#main-menu{position:absolute;top:0;left:0;bottom:0;width:88%;max-width:340px;background:var(--bg2);z-index:20;display:none;flex-direction:column;border-right:1px solid var(--border);overflow-y:auto;scrollbar-width:none;transform:translateX(-100%);transition:transform 0.28s ease;}
+#main-menu.open{display:flex;transform:translateX(0);}
+#main-menu::-webkit-scrollbar{display:none;}
+#overlay{position:absolute;inset:0;background:rgba(0,0,0,0.55);z-index:19;display:none;}
+#overlay.open{display:block;}
+
+.menu-hdr{padding:18px 18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.menu-logo{font-size:17px;font-weight:600;}
+.menu-logo span{color:var(--blue);}
+.menu-close-btn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0.4;}
+.menu-close-btn svg{width:14px;height:14px;stroke:var(--text);fill:none;}
+
+.menu-sec{padding:14px 18px;border-bottom:1px solid var(--border);}
+.menu-sec-title{font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-bottom:10px;}
+
+/* FAI card */
+.fai-card{background:var(--bg3);border:1px solid rgba(74,158,255,0.18);border-radius:var(--radius);padding:11px 12px;display:flex;align-items:center;gap:10px;}
+.fai-icon{width:34px;height:34px;border-radius:var(--radius-sm);background:var(--blue-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fai-icon img{width:18px;height:18px;}
+.fai-info{flex:1;}
+.fai-name{font-size:13px;font-weight:500;}
+.fai-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.fai-badge{font-size:9px;background:var(--blue-dim);color:var(--blue);padding:2px 7px;border-radius:4px;font-weight:600;letter-spacing:0.05em;white-space:nowrap;}
+
+/* DFP */
+#dfp-text{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 11px;color:var(--text2);font-family:'DM Mono',monospace;font-size:11px;resize:none;height:88px;outline:none;line-height:1.5;margin-top:8px;}
+
+/* AI list */
+.ai-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.ai-item:last-child{border-bottom:none;}
+.ai-item-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--bg3);}
+.ai-item-icon img{width:16px;height:16px;}
+.ai-item-info{flex:1;min-width:0;}
+.ai-item-name{font-size:13px;font-weight:500;color:var(--text);}
+.ai-item-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.api-btn{font-size:10px;color:var(--blue);background:var(--blue-dim);padding:4px 9px;border-radius:4px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;font-weight:500;white-space:nowrap;}
+
+.divider-label{font-size:10px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;padding:10px 0 6px;}
+
+/* Modes */
+.mode-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.mode-item:last-child{border-bottom:none;}
+.mode-em{font-size:18px;width:26px;text-align:center;flex-shrink:0;margin-top:1px;}
+.mode-info{flex:1;}
+.mode-name{font-size:13px;font-weight:500;}
+.mode-desc{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4;}
+.mode-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);margin-top:5px;flex-shrink:0;display:none;}
+.mode-dot.on{display:block;}
+
+/* Footer */
+.menu-footer{padding:14px 18px;margin-top:auto;flex-shrink:0;}
+.footer-links{display:flex;flex-wrap:wrap;gap:6px;}
+.footer-link{font-size:11px;color:var(--text3);cursor:pointer;padding:5px 9px;background:var(--bg3);border-radius:4px;border:1px solid var(--border);}
+.footer-note{margin-top:10px;font-size:10px;color:var(--text3);text-align:center;letter-spacing:0.03em;}
+
+/* API Modal */
+#api-modal{position:absolute;inset:0;background:rgba(0,0,0,0.7);z-index:30;display:none;align-items:flex-end;}
+#api-modal.open{display:flex;}
+.api-inner{background:var(--bg2);border-radius:var(--radius) var(--radius) 0 0;border:1px solid var(--border);border-bottom:none;padding:20px 18px 32px;width:100%;animation:slideUp 0.28s ease;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.api-title{font-size:15px;font-weight:600;margin-bottom:3px;}
+.api-sub{font-size:12px;color:var(--text3);margin-bottom:14px;}
+.api-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;outline:none;}
+.api-input:focus{border-color:rgba(74,158,255,0.35);}
+.api-btns{display:flex;gap:8px;margin-top:10px;}
+.btn-p{flex:1;padding:11px;background:var(--blue);border:none;border-radius:var(--radius-sm);color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;}
+.btn-s{padding:11px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
+</style>
 </head>
 <body>
-  <div class="bg"></div>
-  <div class="container">
-    <div class="logo">fremis<span>.ai</span></div>
-    <div class="tagline">Intelligence to <span class="infinity">∞</span></div>
-    <div class="divider"></div>
-    <div class="coming-soon">Coming soon</div>
-    <div class="dots">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
+<div id="app">
+
+<div id="overlay" onclick="closeMainMenu()"></div>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="top-btn" onclick="toggleMainMenu()">
+    <svg viewBox="0 0 16 16"><rect x="2" y="3.5" width="12" height="1.5" rx="0.75"/><rect x="2" y="7.25" width="12" height="1.5" rx="0.75"/><rect x="2" y="11" width="12" height="1.5" rx="0.75"/></svg>
+  </div>
+  <div id="secondary-trigger" onclick="toggleSecondary()">
+    <span class="label">Intelligence to <span class="inf">∞</span></span>
+    <svg id="chevron" viewBox="0 0 16 16" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>
+  </div>
+  <div class="top-btn" id="new-chat-btn" onclick="newChat()">
+    <svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+  </div>
+</div>
+
+<!-- SECONDARY MENU -->
+<div id="secondary-menu">
+
+  <!-- Block 1 — Garden Mode (no X) -->
+  <div class="block" id="block1">
+    <div class="block-header">
+      <span class="block-title">Garden Mode</span>
+    </div>
+    <div id="garden-toggle-row">
+      <label>Configure AI interaction</label>
+      <div class="toggle" id="garden-toggle" onclick="toggleGarden()"><div class="toggle-thumb"></div></div>
+    </div>
+    <div id="garden-text-wrap">
+      <textarea id="garden-text" disabled placeholder="Configure how AIs interact: set hierarchy, assign tasks, specialize roles.&#10;&#10;Default: main menu / Garden Mode."></textarea>
     </div>
   </div>
+
+  <!-- Block 2 -->
+  <div class="block" id="block2">
+    <div class="block-header">
+      <span class="block-title">AI Configuration</span>
+      <div style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0.4;" onclick="toggleSecondary()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="var(--text2)" stroke-width="1.5" stroke-linecap="round" width="12" height="12"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+      </div>
+    </div>
+
+    <div class="b2-section">
+      <div class="b2-label">Frontal AI</div>
+      <select class="b2-select" id="fai-select" onchange="updateFAI(this.value)">
+        <option value="gemini">Gemini Flash — Google</option>
+        <option value="claude">Claude — Anthropic</option>
+        <option value="gpt">GPT-4o — OpenAI</option>
+        <option value="grok">Grok — xAI</option>
+      </select>
+    </div>
+
+    <div class="b2-section">
+      <div class="b2-label">Involved AIs</div>
+      <div class="ai-slots">
+        <div class="ai-slot active"><img src="https://cdn.simpleicons.org/meta/8892a4" onerror="this.style.display='none'"><span>Llama 4</span></div>
+        <div class="ai-slot active"><img src="https://cdn.simpleicons.org/deepseek/8892a4" onerror="this.style.display='none'"><span>DeepSeek</span></div>
+        <div class="ai-slot active"><img src="https://cdn.simpleicons.org/mistral/8892a4" onerror="this.style.display='none'"><span>Mistral</span></div>
+        <div class="ai-slot active"><img src="https://cdn.simpleicons.org/alibabadotcom/8892a4" onerror="this.style.display='none'"><span>Qwen 3</span></div>
+        <div class="ai-slot plus-slot" onclick="toggleMainMenu()"><span>+ Add AI</span></div>
+      </div>
+    </div>
+
+    <div class="b2-section">
+      <div class="b2-label">Response time</div>
+      <select class="b2-select" id="time-select">
+        <option value="15">15 seconds</option>
+        <option value="20">20 seconds</option>
+        <option value="30" selected>30 seconds</option>
+        <option value="60">1 minute</option>
+        <option value="300">5 minutes</option>
+        <option value="0">Automatic</option>
+      </select>
+    </div>
+
+    <div class="b2-section">
+      <div class="b2-label">Iterations</div>
+      <div class="iter-row" id="iter-row">
+        <div class="iter-btn active" onclick="setIter(1,this)">1</div>
+        <div class="iter-btn" onclick="setIter(2,this)">2</div>
+        <div class="iter-btn" onclick="setIter(3,this)">3</div>
+        <div class="iter-btn" onclick="setIter(4,this)">4</div>
+        <div class="iter-btn" onclick="setIter(5,this)">5</div>
+      </div>
+    </div>
+
+    <div class="b2-section">
+      <div class="disc-row">
+        <div class="disc-info">
+          <div class="disc-name">Discovery Mode</div>
+          <div class="disc-sub">Sequential · no consolidation per step</div>
+        </div>
+        <div class="toggle" id="discovery-toggle" onclick="toggleDiscovery()"><div class="toggle-thumb"></div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- READING AREA -->
+<div id="reading-area">
+  <div class="welcome" id="welcome-screen">
+    <div class="welcome-logo">fremis<span>.ai</span></div>
+    <div class="welcome-tagline">Intelligence to ∞</div>
+    <div class="welcome-desc" id="welcome-desc"></div>
+  </div>
+</div>
+
+<!-- WRITING AREA -->
+<div id="writing-area">
+  <div class="input-row">
+    <div id="plus-btn">
+      <svg viewBox="0 0 16 16" stroke-width="1.5" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg>
+    </div>
+    <div id="input-wrap">
+      <textarea id="user-input" rows="1" placeholder="Ask anything..." oninput="handleInput(this)"></textarea>
+      <div id="send-btn" onclick="sendMessage()">
+        <svg viewBox="0 0 16 16"><path d="M3 13L13 8 3 3v4l7 1-7 1v4z"/></svg>
+      </div>
+    </div>
+  </div>
+  <div class="extra-icons">
+    <div class="extra-icon"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></div>
+    <div class="extra-icon"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9v7c0 1.1.9 2 2 2h4v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-4v8h4c1.1 0 2-.9 2-2v-7c0-4.97-4.03-9-9-9z"/></svg></div>
+  </div>
+</div>
+
+<!-- MAIN MENU -->
+<div id="main-menu">
+  <div class="menu-hdr">
+    <div class="menu-logo">fremis<span>.ai</span></div>
+    <div class="menu-close-btn" onclick="closeMainMenu()">
+      <svg viewBox="0 0 16 16" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+    </div>
+  </div>
+
+  <!-- Frontal AI -->
+  <div class="menu-sec">
+    <div class="menu-sec-title">Frontal AI</div>
+    <div class="fai-card">
+      <div class="fai-icon">
+        <img id="fai-icon-img" src="https://cdn.simpleicons.org/google/4a9eff" onerror="this.style.display='none'">
+      </div>
+      <div class="fai-info">
+        <div class="fai-name" id="fai-name-menu">Gemini Flash</div>
+        <div class="fai-sub" id="fai-sub-menu">Google · USA · Free tier</div>
+      </div>
+      <div class="fai-badge">FRONTAL</div>
+    </div>
+    <textarea id="dfp-text">You are the Frontal AI (FAI) of a harmonized system called Fremis. ROLE: orchestrate, validate, consolidate. CYCLE: 1) Distribute query to all involved AIs via Prompt 6. 2) Receive responses within time limit. 3) Validate each: detect hallucinations, flag low confidence. 4) Consolidate: consensus %, key divergences, confidence score, minimum viable response. 5) Show real-time progress. 6) If time expires: consolidate what you have. 7) If AI fails: continue, note absence. Match user tone. Never fake consensus.</textarea>
+  </div>
+
+  <!-- Involved AIs -->
+  <div class="menu-sec">
+    <div class="menu-sec-title">Involved AIs</div>
+
+    <!-- Active by default -->
+    <div class="ai-item">
+      <div class="ai-item-icon"><img src="https://cdn.simpleicons.org/meta/8892a4" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">Llama 4</div><div class="ai-item-sub">Meta · USA · Open source</div></div>
+      <div class="toggle on" id="t-llama" onclick="toggleAI('llama')"><div class="toggle-thumb"></div></div>
+    </div>
+    <div class="ai-item">
+      <div class="ai-item-icon"><img src="https://cdn.simpleicons.org/deepseek/8892a4" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">DeepSeek V3</div><div class="ai-item-sub">DeepSeek · China</div></div>
+      <div class="toggle on" id="t-deepseek" onclick="toggleAI('deepseek')"><div class="toggle-thumb"></div></div>
+    </div>
+    <div class="ai-item">
+      <div class="ai-item-icon"><img src="https://cdn.simpleicons.org/mistral/8892a4" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">Mistral</div><div class="ai-item-sub">Mistral AI · France</div></div>
+      <div class="toggle on" id="t-mistral" onclick="toggleAI('mistral')"><div class="toggle-thumb"></div></div>
+    </div>
+    <div class="ai-item">
+      <div class="ai-item-icon"><img src="https://cdn.simpleicons.org/alibabadotcom/8892a4" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">Qwen 3</div><div class="ai-item-sub">Alibaba · China · Multilingual</div></div>
+      <div class="toggle on" id="t-qwen" onclick="toggleAI('qwen')"><div class="toggle-thumb"></div></div>
+    </div>
+
+    <!-- API key — 1 tap -->
+    <div class="divider-label">1-tap connect</div>
+    <div class="ai-item">
+      <div class="ai-item-icon" style="background:rgba(217,119,87,0.12)"><img src="https://cdn.simpleicons.org/anthropic/D97757" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">Claude</div><div class="ai-item-sub">Anthropic · USA</div></div>
+      <button class="api-btn" onclick="openApiModal('claude','Claude')">+ API Key</button>
+    </div>
+    <div class="ai-item">
+      <div class="ai-item-icon" style="background:rgba(255,255,255,0.05)"><img src="https://cdn.simpleicons.org/openai/e8eaf0" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">GPT-4o</div><div class="ai-item-sub">OpenAI · USA</div></div>
+      <button class="api-btn" onclick="openApiModal('gpt','GPT-4o')">+ API Key</button>
+    </div>
+    <div class="ai-item">
+      <div class="ai-item-icon" style="background:rgba(255,255,255,0.05)"><img src="https://cdn.simpleicons.org/x/e8eaf0" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">Grok</div><div class="ai-item-sub">xAI · USA</div></div>
+      <button class="api-btn" onclick="openApiModal('grok','Grok')">+ API Key</button>
+    </div>
+    <div class="ai-item">
+      <div class="ai-item-icon" style="background:rgba(74,158,255,0.1)"><img src="https://cdn.simpleicons.org/google/4a9eff" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">Gemini Pro</div><div class="ai-item-sub">Google · USA</div></div>
+      <button class="api-btn" onclick="openApiModal('gemini_pro','Gemini Pro')">+ API Key</button>
+    </div>
+
+    <!-- Installed, inactive — cultural diversity -->
+    <div class="divider-label">Installed · inactive</div>
+    <div class="ai-item">
+      <div class="ai-item-icon"><img src="https://cdn.simpleicons.org/groq/8892a4" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">Groq</div><div class="ai-item-sub">Groq · USA · Ultra-fast</div></div>
+      <div class="toggle" id="t-groq" onclick="toggleAI('groq')"><div class="toggle-thumb"></div></div>
+    </div>
+    <div class="ai-item">
+      <div class="ai-item-icon"><img src="https://cdn.simpleicons.org/zhihu/8892a4" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">GLM · Zhipu</div><div class="ai-item-sub">Z.ai · China · Coding</div></div>
+      <div class="toggle" id="t-glm" onclick="toggleAI('glm')"><div class="toggle-thumb"></div></div>
+    </div>
+    <div class="ai-item">
+      <div class="ai-item-icon"><img src="https://cdn.simpleicons.org/cohere/8892a4" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">Command R+</div><div class="ai-item-sub">Cohere · Canada</div></div>
+      <div class="toggle" id="t-cohere" onclick="toggleAI('cohere')"><div class="toggle-thumb"></div></div>
+    </div>
+    <div class="ai-item">
+      <div class="ai-item-icon"><img src="https://cdn.simpleicons.org/cloudflare/8892a4" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">Workers AI</div><div class="ai-item-sub">Cloudflare · USA · Edge</div></div>
+      <div class="toggle" id="t-cf" onclick="toggleAI('cf')"><div class="toggle-thumb"></div></div>
+    </div>
+    <div class="ai-item">
+      <div class="ai-item-icon"><img src="https://cdn.simpleicons.org/samsung/8892a4" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">HyperCLOVA</div><div class="ai-item-sub">Naver · South Korea</div></div>
+      <div class="toggle" id="t-hyper" onclick="toggleAI('hyper')"><div class="toggle-thumb"></div></div>
+    </div>
+    <div class="ai-item">
+      <div class="ai-item-icon"><img src="https://cdn.simpleicons.org/falcon/8892a4" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">Falcon</div><div class="ai-item-sub">TII · UAE</div></div>
+      <div class="toggle" id="t-falcon" onclick="toggleAI('falcon')"><div class="toggle-thumb"></div></div>
+    </div>
+    <div class="ai-item">
+      <div class="ai-item-icon"><img src="https://cdn.simpleicons.org/ola/8892a4" onerror="this.style.display='none'"></div>
+      <div class="ai-item-info"><div class="ai-item-name">Krutrim</div><div class="ai-item-sub">Ola · India · Indic</div></div>
+      <div class="toggle" id="t-krutrim" onclick="toggleAI('krutrim')"><div class="toggle-thumb"></div></div>
+    </div>
+  </div>
+
+  <!-- Modes -->
+  <div class="menu-sec">
+    <div class="menu-sec-title">Mode</div>
+    <div class="mode-item" onclick="setMode('anthill')">
+      <div class="mode-em">🐜</div>
+      <div class="mode-info"><div class="mode-name">Anthill</div><div class="mode-desc">Autonomous emergence. AIs interact freely without direction.</div></div>
+      <div class="mode-dot on" id="md-anthill"></div>
+    </div>
+    <div class="mode-item" onclick="setMode('garden')">
+      <div class="mode-em">🌱</div>
+      <div class="mode-info"><div class="mode-name">Garden</div><div class="mode-desc">You set the conditions. AIs emerge within your instructions.</div></div>
+      <div class="mode-dot" id="md-garden"></div>
+    </div>
+    <div class="mode-item" onclick="setMode('discovery')">
+      <div class="mode-em">🔭</div>
+      <div class="mode-info"><div class="mode-name">Discovery</div><div class="mode-desc">Sequential. Each AI builds on the previous. More original.</div></div>
+      <div class="mode-dot" id="md-discovery"></div>
+    </div>
+  </div>
+
+  <div class="menu-footer">
+    <div class="footer-links">
+      <div class="footer-link">Roadmap</div>
+      <div class="footer-link">Glossary</div>
+      <div class="footer-link">About</div>
+      <div class="footer-link">Share</div>
+    </div>
+    <div class="footer-note">fremis.ai · open source · no login · no cookies</div>
+  </div>
+</div>
+
+<!-- API MODAL -->
+<div id="api-modal">
+  <div class="api-inner">
+    <div class="api-title" id="api-modal-title">Connect</div>
+    <div class="api-sub">Paste your API key. Stored locally, never shared.</div>
+    <input type="password" class="api-input" id="api-key-input" placeholder="Paste API key here...">
+    <div class="api-btns">
+      <button class="btn-s" onclick="closeApiModal()">Cancel</button>
+      <button class="btn-p" onclick="saveApiKey()">Connect</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+const state = {
+  secondaryOpen: false,
+  gardenActive: false,
+  discoveryActive: false,
+  iterations: 1,
+  mode: 'anthill',
+  currentApiTarget: null,
+  apiKeys: JSON.parse(localStorage.getItem('fremis_keys') || '{}'),
+  fai: 'gemini'
+};
+
+// ── WELCOME PHRASES ──
+const phrases = [
+  "Multiple AIs. One response.",
+  "Work with multiple AIs at once. One question, many minds, one answer.",
+  "Your questions answered by several AIs simultaneously — consolidated into one.",
+  "A frontal AI that orchestrates the rest. Configurable. Free. Open source."
+];
+
+function showPhrase() {
+  const el = document.getElementById('welcome-desc');
+  if (!el) return;
+  el.classList.remove('visible');
+  setTimeout(() => {
+    el.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+    el.classList.add('visible');
+  }, 400);
+}
+
+showPhrase();
+setInterval(showPhrase, 120000); // every 2 minutes
+
+// ── FAI CONFIG ──
+const faiConfig = {
+  gemini:  { name:'Gemini Flash', sub:'Google · USA · Free tier', icon:'https://cdn.simpleicons.org/google/4a9eff' },
+  claude:  { name:'Claude',       sub:'Anthropic · USA',          icon:'https://cdn.simpleicons.org/anthropic/D97757' },
+  gpt:     { name:'GPT-4o',       sub:'OpenAI · USA',             icon:'https://cdn.simpleicons.org/openai/e8eaf0' },
+  grok:    { name:'Grok',         sub:'xAI · USA',                icon:'https://cdn.simpleicons.org/x/e8eaf0' },
+};
+
+function updateFAI(val) {
+  state.fai = val;
+  const cfg = faiConfig[val];
+  if (!cfg) return;
+  document.getElementById('fai-name-menu').textContent = cfg.name;
+  document.getElementById('fai-sub-menu').textContent = cfg.sub;
+  const img = document.getElementById('fai-icon-img');
+  if (img) img.src = cfg.icon;
+}
+
+// ── MENUS ──
+function toggleSecondary() {
+  state.secondaryOpen = !state.secondaryOpen;
+  document.getElementById('secondary-menu').classList.toggle('open', state.secondaryOpen);
+  document.getElementById('chevron').classList.toggle('open', state.secondaryOpen);
+  if (state.secondaryOpen) closeMainMenu();
+}
+
+function toggleMainMenu() {
+  const m = document.getElementById('main-menu');
+  const o = document.getElementById('overlay');
+  const isOpen = m.classList.contains('open');
+  m.classList.toggle('open', !isOpen);
+  o.classList.toggle('open', !isOpen);
+  if (!isOpen) { state.secondaryOpen = false; document.getElementById('secondary-menu').classList.remove('open'); document.getElementById('chevron').classList.remove('open'); }
+}
+
+function closeMainMenu() {
+  document.getElementById('main-menu').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ── CONTROLS ──
+function toggleGarden() {
+  state.gardenActive = !state.gardenActive;
+  document.getElementById('garden-toggle').classList.toggle('on', state.gardenActive);
+  document.getElementById('garden-text').disabled = !state.gardenActive;
+  if (state.gardenActive) setMode('garden');
+  else if (state.mode === 'garden') setMode('anthill');
+}
+
+function toggleDiscovery() {
+  state.discoveryActive = !state.discoveryActive;
+  document.getElementById('discovery-toggle').classList.toggle('on', state.discoveryActive);
+  if (state.discoveryActive) setMode('discovery');
+  else if (state.mode === 'discovery') setMode('anthill');
+}
+
+function setIter(n, btn) {
+  state.iterations = n;
+  document.querySelectorAll('.iter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setMode(m) {
+  state.mode = m;
+  ['anthill','garden','discovery'].forEach(id => {
+    const el = document.getElementById('md-' + id);
+    if (el) el.classList.toggle('on', id === m);
+  });
+}
+
+function toggleAI(id) {
+  const t = document.getElementById('t-' + id);
+  if (t) t.classList.toggle('on');
+}
+
+// ── API MODAL ──
+function openApiModal(target, label) {
+  state.currentApiTarget = target;
+  document.getElementById('api-modal-title').textContent = 'Connect ' + label;
+  document.getElementById('api-key-input').value = state.apiKeys[target] || '';
+  document.getElementById('api-modal').classList.add('open');
+}
+function closeApiModal() { document.getElementById('api-modal').classList.remove('open'); }
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (key && state.currentApiTarget) {
+    state.apiKeys[state.currentApiTarget] = key;
+    localStorage.setItem('fremis_keys', JSON.stringify(state.apiKeys));
+  }
+  closeApiModal();
+}
+
+// ── INPUT ──
+function handleInput(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  document.getElementById('send-btn').classList.toggle('active', el.value.trim().length > 0);
+}
+document.getElementById('user-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+
+function newChat() {
+  document.getElementById('reading-area').innerHTML = `
+    <div class="welcome" id="welcome-screen">
+      <div class="welcome-logo">fremis<span>.ai</span></div>
+      <div class="welcome-tagline">Intelligence to ∞</div>
+      <div class="welcome-desc visible" id="welcome-desc">${phrases[Math.floor(Math.random()*phrases.length)]}</div>
+    </div>`;
+}
+
+function esc(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── SEND ──
+async function sendMessage() {
+  const input = document.getElementById('user-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const w = document.getElementById('welcome-screen');
+  if (w) w.remove();
+
+  appendUserMsg(text);
+  input.value = ''; input.style.height = 'auto';
+  document.getElementById('send-btn').classList.remove('active');
+  if (state.secondaryOpen) toggleSecondary();
+
+  const activeAIs = ['llama','deepseek','mistral','qwen'].filter(id => {
+    const t = document.getElementById('t-' + id);
+    return t && t.classList.contains('on');
+  });
+
+  const pid = 'p' + Date.now();
+  renderProcessing(pid, activeAIs);
+
+  const responses = await simulateResponses(activeAIs);
+  updateProcessingDone(pid, responses);
+
+  await sleep(500);
+  renderConsolidated(pid, responses);
+}
+
+function appendUserMsg(text) {
+  const area = document.getElementById('reading-area');
+  const el = document.createElement('div');
+  el.className = 'msg msg-user';
+  el.innerHTML = `<div class="bubble">${esc(text)}</div>`;
+  area.appendChild(el);
+  area.scrollTop = area.scrollHeight;
+}
+
+const aiNames = { llama:'Llama 4', deepseek:'DeepSeek V3', mistral:'Mistral', qwen:'Qwen 3' };
+const aiIcons = {
+  llama:    'https://cdn.simpleicons.org/meta/8892a4',
+  deepseek: 'https://cdn.simpleicons.org/deepseek/8892a4',
+  mistral:  'https://cdn.simpleicons.org/mistral/8892a4',
+  qwen:     'https://cdn.simpleicons.org/alibabadotcom/8892a4'
+};
+
+function renderProcessing(pid, ais) {
+  const faiName = faiConfig[state.fai]?.name || 'Gemini Flash';
+  const rows = ais.map(ai => `
+    <div class="ai-row" id="r_${pid}_${ai}">
+      <div class="ai-row-icon"><img src="${aiIcons[ai]}" onerror="this.style.display='none'"></div>
+      <div class="ai-name">${aiNames[ai] || ai}</div>
+      <div class="ai-status" id="s_${pid}_${ai}"><div class="ai-spinner"></div></div>
+    </div>`).join('');
+
+  const el = document.createElement('div');
+  el.className = 'msg msg-system'; el.id = pid;
+  el.innerHTML = `<div class="ai-process"><div class="ai-process-title">${esc(faiName)} · ${ais.length} hemispheres · ${state.mode}</div>${rows}</div>`;
+  const area = document.getElementById('reading-area');
+  area.appendChild(el); area.scrollTop = area.scrollHeight;
+}
+
+function updateProcessingDone(pid, responses) {
+  const area = document.getElementById('reading-area');
+  responses.forEach(r => {
+    const s = document.getElementById(`s_${pid}_${r.ai}`);
+    if (s) { s.className = 'ai-status done'; s.textContent = r.ms + 'ms'; }
+    const row = document.getElementById(`r_${pid}_${r.ai}`);
+    if (row) {
+      const snip = document.createElement('div');
+      snip.className = 'ai-snippet';
+      snip.textContent = '"' + r.snippet + '"';
+      row.insertAdjacentElement('afterend', snip);
+    }
+  });
+  area.scrollTop = area.scrollHeight;
+}
+
+function renderConsolidated(pid, responses) {
+  const consensus = 60 + Math.floor(Math.random() * 35);
+  const texts = [
+    "Across all hemispheres, the analysis converges on this: the topic has multiple valid interpretations. Key divergence — DeepSeek emphasizes logical structure; Mistral prioritizes nuance. Minimum viable answer: approach systematically and validate across frameworks.",
+    "Strong consensus on core principles (" + consensus + "%). Notable divergence on methodology — Eastern models favor holistic approaches, Western models favor structured analysis. Both add value. Confidence: high on fundamentals, moderate on specifics.",
+    "Synthesized from " + responses.length + " perspectives: the question benefits from multi-angle analysis. No hallucinations detected. Consensus on direction, divergence on implementation details. Recommendation: use the convergence points as your foundation."
+  ];
+  const el = document.createElement('div');
+  el.className = 'msg msg-system';
+  const barId = 'b' + Date.now();
+  el.innerHTML = `
+    <div class="consolidated">
+      <div class="consolidated-hdr"><div class="dot"></div><span>Consolidated response</span></div>
+      <div class="consolidated-text">${texts[Math.floor(Math.random()*texts.length)]}</div>
+      <div class="consensus-bar">
+        <span class="c-label">Consensus</span>
+        <div class="bar-track"><div class="bar-fill" id="${barId}"></div></div>
+        <span class="c-pct">${consensus}%</span>
+      </div>
+    </div>`;
+  const area = document.getElementById('reading-area');
+  area.appendChild(el); area.scrollTop = area.scrollHeight;
+  setTimeout(() => { const b = document.getElementById(barId); if (b) b.style.width = consensus + '%'; }, 80);
+}
+
+// ── DEMO RESPONSES ──
+const snippets = {
+  llama:    ["From an open-source perspective, the key factors here are interconnected.", "Analyzing across training data — accuracy and context are central.", "This requires multi-angle analysis grounded in documented evidence."],
+  deepseek: ["深度分析 — systematic logical breakdown is most effective.", "Cause-effect relationships define the optimal approach here.", "Structured reasoning with creative problem-solving yields best results."],
+  mistral:  ["D'une perspective équilibrée — nuance and precision are essential.", "Rigorous examination reveals dimensions that shouldn't be overlooked.", "Balance between technical precision and human context is key."],
+  qwen:     ["从多元视角 — diverse knowledge systems offer complementary insights.", "Both Western analytical and Eastern holistic approaches apply here.", "Multilingual training enables pattern recognition across cultural contexts."]
+};
+
+async function simulateResponses(ais) {
+  const results = [];
+  for (const ai of ais) {
+    await sleep(350 + Math.random() * 700);
+    const s = snippets[ai] || ["Response from " + ai];
+    results.push({ ai, snippet: s[Math.floor(Math.random()*s.length)], ms: 280 + Math.floor(Math.random()*600) });
+  }
+  return results;
+}
+</script>
 </body>
 </html>
