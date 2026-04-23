@@ -5,239 +5,371 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>fremis.ai — Intelligence to ∞</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#0a0d14;--bg2:#111520;--bg3:#161b28;--bg4:#1c2333;
-  --border:rgba(255,255,255,0.07);
-  --blue:#4a9eff;--blue-dim:rgba(74,158,255,0.12);
-  --text:#e8eaf0;--text2:#8892a4;--text3:#4a5468;
-  --radius:12px;--radius-sm:8px;
+  --bg:    #1a1a1a;
+  --bg2:   #222222;
+  --bg3:   #2a2a2a;
+  --bg4:   #333333;
+  --border:rgba(255,255,255,0.09);
+  --blue:  #4a9eff;
+  --blue-dim:rgba(74,158,255,0.13);
+  --white: #ffffff;
+  --dim:   #aaaaaa;
+  --faint: #666666;
+  --radius:14px;
+  --rsm:   9px;
+  --fs-base: 16px;
+  --fs-sm:   14px;
+  --fs-xs:   12px;
+  --fs-lg:   18px;
+  --fs-xl:   22px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif;font-size:var(--fs-base);-webkit-font-smoothing:antialiased;}
 #app{display:flex;flex-direction:column;height:100vh;height:100dvh;position:relative;overflow:hidden;}
 
-/* TOPBAR */
-#topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg);z-index:10;flex-shrink:0;}
-.top-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);background:var(--bg3);border:1px solid var(--border);cursor:pointer;flex-shrink:0;}
-.top-btn svg{width:16px;height:16px;}
-#new-chat-btn{background:var(--blue);border-color:var(--blue);}
-#secondary-trigger{display:flex;align-items:center;gap:6px;cursor:pointer;padding:6px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);}
-#secondary-trigger .lbl{font-size:13px;color:var(--text2);font-weight:500;white-space:nowrap;}
+/* ── TOPBAR ── */
+#topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  background:var(--bg);z-index:10;flex-shrink:0;gap:10px;
+}
+.tbtn{
+  width:40px;height:40px;min-width:40px;display:flex;align-items:center;justify-content:center;
+  border-radius:var(--rsm);background:var(--bg3);border:1px solid var(--border);cursor:pointer;
+}
+.tbtn svg{width:18px;height:18px;}
+#new-btn{background:var(--blue);border-color:var(--blue);}
+#sec-trigger{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:7px;
+  cursor:pointer;padding:9px 14px;border-radius:var(--rsm);
+  border:1px solid var(--border);background:var(--bg3);
+}
+#sec-trigger .lbl{font-size:var(--fs-sm);color:var(--dim);font-weight:500;white-space:nowrap;}
 .inf{color:var(--blue);}
-#chevron{width:14px;height:14px;stroke:var(--text3);fill:none;transition:transform .25s;}
-#chevron.open{transform:rotate(180deg);}
+#chev{width:15px;height:15px;stroke:var(--faint);fill:none;transition:transform .25s;flex-shrink:0;}
+#chev.open{transform:rotate(180deg);}
 
-/* READING */
-#reading-area{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scrollbar-width:none;}
-#reading-area::-webkit-scrollbar{display:none;}
+/* ── READING ── */
+#reading{
+  flex:1;overflow-y:auto;padding:20px 18px;
+  display:flex;flex-direction:column;gap:16px;
+  scrollbar-width:none;
+}
+#reading::-webkit-scrollbar{display:none;}
 
-.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:10px;padding:40px 24px;text-align:center;}
-.w-logo{font-size:30px;font-weight:600;color:white;letter-spacing:-.02em;}
+/* Welcome */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:14px;padding:40px 20px;text-align:center;}
+.w-logo{font-size:34px;font-weight:600;color:var(--white);letter-spacing:-.02em;}
 .w-logo span{color:var(--blue);}
-.w-tag{font-size:11px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;}
-.w-desc{font-size:14px;color:var(--text2);line-height:1.6;max-width:280px;opacity:0;transition:opacity .8s ease;min-height:44px;}
+.w-tag{font-size:var(--fs-xs);color:var(--faint);letter-spacing:.1em;text-transform:uppercase;}
+.w-desc{font-size:var(--fs-base);color:var(--dim);line-height:1.65;max-width:300px;opacity:0;transition:opacity .7s ease;min-height:52px;}
 .w-desc.vis{opacity:1;}
+.w-desc strong{color:var(--white);display:block;margin-bottom:6px;font-size:var(--fs-lg);}
 
-/* API key notice */
-.api-notice{background:var(--bg2);border:1px solid rgba(74,158,255,0.2);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:8px;}
-.api-notice-dot{width:6px;height:6px;background:var(--blue);border-radius:50%;flex-shrink:0;animation:blink 2s infinite;}
+/* API notice */
+.api-notice{
+  background:var(--bg2);border:1px solid rgba(74,158,255,.2);
+  border-radius:var(--radius);padding:14px 16px;
+  display:flex;align-items:flex-start;gap:12px;cursor:pointer;margin-top:4px;
+}
+.notice-dot{width:8px;height:8px;background:var(--blue);border-radius:50%;flex-shrink:0;margin-top:4px;animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:.3;}50%{opacity:1;}}
-.api-notice-text{font-size:12px;color:var(--text2);line-height:1.4;}
-.api-notice-text strong{color:var(--blue);}
+.notice-text{font-size:var(--fs-sm);color:var(--dim);line-height:1.5;}
+.notice-text strong{color:var(--blue);}
 
-.msg{display:flex;flex-direction:column;gap:6px;animation:fu .3s ease;}
-@keyframes fu{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+/* Messages */
+.msg{display:flex;flex-direction:column;gap:8px;animation:fu .3s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 .msg-user{align-items:flex-end;}
-.msg-user .bubble{background:var(--blue);color:white;padding:10px 14px;border-radius:18px 18px 4px 18px;font-size:14px;max-width:82%;line-height:1.5;}
+.msg-user .bbl{background:var(--blue);color:var(--white);padding:12px 16px;border-radius:20px 20px 4px 20px;font-size:var(--fs-base);max-width:82%;line-height:1.55;}
 .msg-sys{align-items:flex-start;}
 
 /* Processing */
-.ai-process{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;display:flex;flex-direction:column;gap:2px;max-width:94%;}
-.proc-title{font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;font-weight:500;margin-bottom:8px;}
-.ai-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);}
+.proc{padding:4px 0;display:flex;flex-direction:column;gap:2px;}
+.proc-title{font-size:var(--fs-xs);color:var(--faint);letter-spacing:.08em;text-transform:uppercase;font-weight:500;margin-bottom:10px;}
+.ai-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);}
 .ai-row:last-child{border-bottom:none;}
-.ai-ico{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;}
-.ai-n{font-size:12px;font-family:'DM Mono',monospace;color:var(--text2);flex:1;}
-.ai-st{font-size:11px;color:var(--text3);}
+.ai-em{font-size:18px;width:24px;text-align:center;flex-shrink:0;}
+.ai-nm{font-size:var(--fs-sm);font-family:'DM Mono',monospace;color:var(--dim);flex:1;}
+.ai-st{font-size:var(--fs-xs);color:var(--faint);}
 .ai-st.done{color:var(--blue);}
-.spinner{width:10px;height:10px;border:1.5px solid var(--text3);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.ai-snip{font-size:12px;color:var(--text2);font-style:italic;padding:4px 0 4px 30px;line-height:1.4;border-bottom:1px solid var(--border);}
-.ai-snip:last-child{border-bottom:none;}
+.spin{width:11px;height:11px;border:1.5px solid var(--faint);border-top-color:var(--blue);border-radius:50%;animation:sp .7s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.ai-snip{font-size:var(--fs-sm);color:var(--dim);font-style:italic;padding:3px 0 3px 36px;line-height:1.4;}
 
-/* Consolidated */
-.consolidated{background:var(--bg2);border:1px solid rgba(74,158,255,0.18);border-radius:var(--radius);padding:14px;max-width:94%;}
-.cons-hdr{display:flex;align-items:center;gap:7px;margin-bottom:10px;}
-.cons-hdr .dot{width:6px;height:6px;background:var(--blue);border-radius:50%;}
-.cons-hdr span{font-size:10px;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;font-weight:500;}
-.cons-text{font-size:14px;line-height:1.65;color:var(--text);white-space:pre-wrap;}
-.cons-bar{margin-top:12px;display:flex;align-items:center;gap:8px;}
-.c-lbl{font-size:11px;color:var(--text3);}
-.bar-t{flex:1;height:2px;background:var(--border);border-radius:2px;overflow:hidden;}
-.bar-f{height:100%;background:var(--blue);border-radius:2px;transition:width .8s ease;width:0%;}
-.c-pct{font-size:11px;color:var(--blue);font-family:'DM Mono',monospace;}
+/* Response — NO box, directly on background */
+.response-text{font-size:var(--fs-base);line-height:1.7;color:var(--white);max-width:100%;white-space:pre-wrap;}
+.response-meta{display:flex;align-items:center;gap:8px;margin-top:10px;}
+.response-label{font-size:var(--fs-xs);color:var(--faint);letter-spacing:.06em;text-transform:uppercase;}
+.bar-wrap{flex:1;height:2px;background:var(--border);border-radius:2px;overflow:hidden;}
+.bar-fill{height:100%;background:var(--blue);border-radius:2px;transition:width .8s ease;width:0%;}
+.bar-pct{font-size:var(--fs-xs);color:var(--blue);font-family:'DM Mono',monospace;}
 
 /* Error */
-.err-bubble{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:11px 14px;font-size:13px;color:var(--text2);line-height:1.5;max-width:94%;}
+.err-text{font-size:var(--fs-sm);color:var(--dim);line-height:1.5;padding:4px 0;}
 
-/* WRITING */
-#writing-area{padding:10px 16px 18px;border-top:1px solid var(--border);background:var(--bg);flex-shrink:0;}
-.input-row{display:flex;align-items:flex-end;gap:8px;}
-#plus-btn{width:36px;height:36px;min-width:36px;border-radius:var(--radius-sm);background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;}
-#input-wrap{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:18px;padding:10px 14px;display:flex;align-items:flex-end;gap:8px;transition:border-color .2s;}
-#input-wrap:focus-within{border-color:rgba(74,158,255,.35);}
-#user-input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;resize:none;max-height:120px;line-height:1.5;}
-#user-input::placeholder{color:var(--text3);}
-#send-btn{width:30px;height:30px;min-width:30px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.4;transition:opacity .2s;}
-#send-btn.active{opacity:1;}
-#send-btn svg{width:13px;height:13px;fill:white;}
-.extra-icons{display:flex;justify-content:center;gap:24px;margin-top:8px;}
-.ei{opacity:.3;cursor:pointer;}
-.ei svg{width:18px;height:18px;fill:var(--text2);}
+/* ── WRITING ── */
+#writing{padding:12px 18px 20px;border-top:1px solid var(--border);background:var(--bg);flex-shrink:0;}
+.inp-row{display:flex;align-items:flex-end;gap:10px;}
+#plus-btn{
+  width:40px;height:40px;min-width:40px;border-radius:var(--rsm);
+  background:var(--bg3);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+#inp-wrap{
+  flex:1;background:var(--bg3);border:1px solid var(--border);
+  border-radius:20px;padding:11px 16px;display:flex;align-items:flex-end;gap:10px;
+  transition:border-color .2s;
+}
+#inp-wrap:focus-within{border-color:rgba(74,158,255,.4);}
+#user-inp{
+  flex:1;background:transparent;border:none;outline:none;
+  color:var(--white);font-family:'DM Sans',sans-serif;
+  font-size:var(--fs-base);resize:none;max-height:130px;line-height:1.5;
+}
+#user-inp::placeholder{color:var(--faint);}
+#send-btn{
+  width:32px;height:32px;min-width:32px;border-radius:50%;
+  background:var(--blue);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;opacity:.4;transition:opacity .2s;
+}
+#send-btn.on{opacity:1;}
+#send-btn svg{width:14px;height:14px;fill:white;}
+.extra-ic{display:flex;justify-content:center;gap:28px;margin-top:10px;}
+.eic{opacity:.25;cursor:pointer;}
+.eic svg{width:20px;height:20px;fill:var(--dim);}
 
-/* SECONDARY */
-#secondary-menu{position:absolute;top:57px;left:0;right:0;bottom:73px;background:var(--bg);z-index:9;display:none;flex-direction:column;overflow-y:auto;scrollbar-width:none;}
-#secondary-menu.open{display:flex;}
-#secondary-menu::-webkit-scrollbar{display:none;}
-.block{margin:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-.block-hdr{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--border);}
-.block-title{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;}
-.toggle{width:38px;height:21px;background:var(--bg4);border:1px solid var(--border);border-radius:11px;cursor:pointer;position:relative;transition:background .2s,border-color .2s;flex-shrink:0;}
-.toggle.on{background:var(--blue);border-color:var(--blue);}
-.thumb{position:absolute;top:2px;left:2px;width:15px;height:15px;background:white;border-radius:50%;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.3);}
-.toggle.on .thumb{left:19px;}
-#garden-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;}
-#garden-toggle-row label{font-size:13px;color:var(--text2);}
-#garden-text-wrap{padding:0 14px 14px;}
-#garden-text{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;resize:none;height:80px;outline:none;line-height:1.5;}
-#garden-text:disabled{opacity:.35;cursor:not-allowed;}
-#garden-text:not(:disabled){color:var(--text);border-color:rgba(74,158,255,.3);}
-.b2s{padding:10px 14px;border-bottom:1px solid var(--border);}
+/* ── SECONDARY MENU ── */
+#sec-menu{
+  position:absolute;top:69px;left:0;right:0;bottom:77px;
+  background:var(--bg);z-index:9;display:none;flex-direction:column;
+  overflow-y:auto;scrollbar-width:none;
+}
+#sec-menu.open{display:flex;}
+#sec-menu::-webkit-scrollbar{display:none;}
+.blk{margin:12px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.blk-hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;border-bottom:1px solid var(--border);}
+.blk-t{font-size:var(--fs-xs);font-weight:600;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;}
+
+/* Toggle */
+.tgl{width:42px;height:24px;background:var(--bg4);border:1px solid var(--border);border-radius:12px;cursor:pointer;position:relative;transition:background .2s,border-color .2s;flex-shrink:0;}
+.tgl.on{background:var(--blue);border-color:var(--blue);}
+.tthumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:white;border-radius:50%;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.tgl.on .tthumb{left:21px;}
+
+/* FAI Selector — prominent */
+.fai-selector{padding:14px 16px;border-bottom:1px solid var(--border);}
+.fai-label{font-size:var(--fs-xs);color:var(--faint);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+.fai-card{
+  background:var(--bg3);border:1px solid rgba(74,158,255,.25);
+  border-radius:var(--radius);padding:12px 14px;
+  display:flex;align-items:center;gap:12px;cursor:pointer;
+}
+.fai-em{font-size:22px;width:30px;text-align:center;flex-shrink:0;}
+.fai-info{flex:1;}
+.fai-name{font-size:var(--fs-lg);font-weight:600;color:var(--white);}
+.fai-sub{font-size:var(--fs-xs);color:var(--faint);margin-top:2px;}
+.fai-badge{font-size:10px;background:var(--blue-dim);color:var(--blue);padding:3px 8px;border-radius:4px;font-weight:600;letter-spacing:.04em;}
+.fai-change{font-size:var(--fs-xs);color:var(--blue);margin-top:8px;text-align:center;cursor:pointer;padding:4px;}
+
+/* FAI picker sheet */
+#fai-picker{
+  position:absolute;inset:0;background:rgba(0,0,0,.7);z-index:25;
+  display:none;align-items:flex-end;
+}
+#fai-picker.open{display:flex;}
+.fai-sheet{
+  background:var(--bg2);border-radius:var(--radius) var(--radius) 0 0;
+  border:1px solid var(--border);border-bottom:none;
+  padding:20px 18px 32px;width:100%;animation:su .28s ease;
+  max-height:80vh;overflow-y:auto;
+}
+@keyframes su{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.fai-sheet-title{font-size:var(--fs-lg);font-weight:600;margin-bottom:4px;}
+.fai-sheet-sub{font-size:var(--fs-sm);color:var(--faint);margin-bottom:16px;}
+.fai-option{
+  display:flex;align-items:center;gap:12px;padding:13px 0;
+  border-bottom:1px solid var(--border);cursor:pointer;
+}
+.fai-option:last-child{border-bottom:none;}
+.fai-option .em{font-size:20px;width:28px;text-align:center;}
+.fai-option .inf{flex:1;}
+.fai-option .nm{font-size:var(--fs-base);font-weight:500;}
+.fai-option .sb{font-size:var(--fs-xs);color:var(--faint);margin-top:2px;}
+.fai-option .sel{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;}
+.fai-option.active .sel{background:var(--blue);border-color:var(--blue);}
+.fai-option.active .nm{color:var(--blue);}
+.no-fai{font-size:var(--fs-sm);color:var(--faint);text-align:center;padding:20px;line-height:1.5;}
+
+/* Block 1 — Garden */
+#garden-row{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;}
+#garden-row label{font-size:var(--fs-base);color:var(--dim);}
+#garden-wrap{padding:0 16px 14px;}
+#garden-txt{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--rsm);padding:11px 13px;color:var(--dim);
+  font-family:'DM Sans',sans-serif;font-size:var(--fs-sm);
+  resize:none;height:85px;outline:none;line-height:1.5;
+}
+#garden-txt:disabled{opacity:.3;cursor:not-allowed;}
+#garden-txt:not(:disabled){color:var(--white);border-color:rgba(74,158,255,.3);}
+
+/* Block 2 sections */
+.b2s{padding:12px 16px;border-bottom:1px solid var(--border);}
 .b2s:last-child{border-bottom:none;}
-.b2l{font-size:11px;color:var(--text3);letter-spacing:.05em;margin-bottom:6px;}
-.b2sel{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;width:100%;cursor:pointer;-webkit-appearance:none;}
-.ai-slots{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.ai-slot{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 10px;display:flex;align-items:center;gap:7px;cursor:pointer;font-size:12px;color:var(--text2);font-family:'DM Mono',monospace;}
+.b2l{font-size:var(--fs-xs);color:var(--faint);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+.ai-slots{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.ai-slot{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--rsm);padding:9px 11px;
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+}
+.ai-slot .sem{font-size:16px;flex-shrink:0;}
+.ai-slot span{font-size:var(--fs-sm);color:var(--dim);font-family:'DM Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .ai-slot.on{border-color:rgba(74,158,255,.3);}
-.ai-slot .s-dot{width:5px;height:5px;border-radius:50%;background:var(--blue);flex-shrink:0;}
-.ai-slot.off .s-dot{background:var(--text3);}
-.plus-slot{border-style:dashed;justify-content:center;color:var(--text3);}
-.iter-row{display:flex;gap:6px;}
-.iter-btn{flex:1;padding:7px 4px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);text-align:center;font-size:12px;color:var(--text2);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
+.plus-slot{border-style:dashed;justify-content:center;}
+.plus-slot span{color:var(--faint);}
+.sel2{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);padding:9px 12px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:var(--fs-base);outline:none;width:100%;cursor:pointer;-webkit-appearance:none;}
+.iter-row{display:flex;gap:7px;}
+.iter-btn{flex:1;padding:9px 4px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);text-align:center;font-size:var(--fs-base);color:var(--dim);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s;}
 .iter-btn.on{background:var(--blue-dim);border-color:var(--blue);color:var(--blue);}
 .disc-row{display:flex;align-items:center;justify-content:space-between;}
-.disc-n{font-size:13px;color:var(--text2);}
-.disc-s{font-size:11px;color:var(--text3);margin-top:2px;}
+.disc-n{font-size:var(--fs-base);color:var(--dim);}
+.disc-s{font-size:var(--fs-xs);color:var(--faint);margin-top:3px;}
 
-/* MAIN MENU */
-#main-menu{position:absolute;top:0;left:0;bottom:0;width:88%;max-width:340px;background:var(--bg2);z-index:20;display:none;flex-direction:column;border-right:1px solid var(--border);overflow-y:auto;scrollbar-width:none;transform:translateX(-100%);transition:transform .28s ease;}
+/* ── MAIN MENU ── */
+#main-menu{
+  position:absolute;top:0;left:0;bottom:0;width:88%;max-width:360px;
+  background:var(--bg2);z-index:20;display:none;flex-direction:column;
+  border-right:1px solid var(--border);overflow-y:auto;scrollbar-width:none;
+  transform:translateX(-100%);transition:transform .28s ease;
+}
 #main-menu.open{display:flex;transform:translateX(0);}
 #main-menu::-webkit-scrollbar{display:none;}
-#overlay{position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:19;display:none;}
+#overlay{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:19;display:none;}
 #overlay.open{display:block;}
-.m-hdr{padding:18px 18px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.m-logo{font-size:17px;font-weight:600;}
+
+.m-hdr{padding:20px 20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.m-logo{font-size:20px;font-weight:600;}
 .m-logo span{color:var(--blue);}
-.m-close{width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.4;}
-.m-close svg{width:14px;height:14px;stroke:var(--text);fill:none;}
-.m-sec{padding:14px 18px;border-bottom:1px solid var(--border);}
-.m-sec-t{font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:10px;}
-.fai-card{background:var(--bg3);border:1px solid rgba(74,158,255,.18);border-radius:var(--radius);padding:11px 12px;display:flex;align-items:center;gap:10px;}
-.fai-ico{width:32px;height:32px;border-radius:var(--radius-sm);background:var(--blue-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
-.fai-inf{flex:1;}
-.fai-n{font-size:13px;font-weight:500;}
-.fai-s{font-size:11px;color:var(--text3);margin-top:1px;}
-.fai-badge{font-size:9px;background:var(--blue-dim);color:var(--blue);padding:2px 7px;border-radius:4px;font-weight:600;letter-spacing:.05em;}
-#dfp-text{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 11px;color:var(--text2);font-family:'DM Mono',monospace;font-size:10px;resize:none;height:100px;outline:none;line-height:1.5;margin-top:8px;}
-.ai-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.m-close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:.4;}
+.m-close svg{width:16px;height:16px;stroke:var(--white);fill:none;}
+
+.m-sec{padding:16px 20px;border-bottom:1px solid var(--border);}
+.m-sec-t{font-size:var(--fs-xs);color:var(--faint);letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:12px;}
+
+.ai-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
 .ai-item:last-child{border-bottom:none;}
-.ai-ic{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--bg3);font-size:14px;}
-.ai-inf{flex:1;min-width:0;}
-.ai-nm{font-size:13px;font-weight:500;}
-.ai-sb{font-size:11px;color:var(--text3);margin-top:1px;}
-.api-btn{font-size:10px;color:var(--blue);background:var(--blue-dim);padding:4px 9px;border-radius:4px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;font-weight:500;white-space:nowrap;}
-.api-btn.connected{color:#4a9eff;background:rgba(74,158,255,0.08);border:1px solid rgba(74,158,255,0.2);}
-.div-lbl{font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:10px 0 6px;}
-.mode-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;}
+.ai-item .em{font-size:20px;width:28px;text-align:center;flex-shrink:0;}
+.ai-item-inf{flex:1;min-width:0;}
+.ai-item-nm{font-size:var(--fs-base);font-weight:500;color:var(--white);}
+.ai-item-sb{font-size:var(--fs-xs);color:var(--faint);margin-top:2px;}
+.api-btn{font-size:var(--fs-xs);color:var(--blue);background:var(--blue-dim);padding:5px 10px;border-radius:4px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;font-weight:500;white-space:nowrap;}
+.api-btn.conn{background:rgba(74,158,255,.06);border:1px solid rgba(74,158,255,.2);}
+
+.div-lbl{font-size:var(--fs-xs);color:var(--faint);letter-spacing:.08em;text-transform:uppercase;padding:12px 0 6px;}
+
+.mode-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);cursor:pointer;}
 .mode-item:last-child{border-bottom:none;}
-.mode-em{font-size:18px;width:26px;text-align:center;flex-shrink:0;margin-top:1px;}
+.mode-em{font-size:20px;width:26px;text-align:center;flex-shrink:0;margin-top:2px;}
 .mode-inf{flex:1;}
-.mode-nm{font-size:13px;font-weight:500;}
-.mode-ds{font-size:11px;color:var(--text3);margin-top:2px;line-height:1.4;}
-.mode-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);margin-top:5px;flex-shrink:0;display:none;}
+.mode-nm{font-size:var(--fs-base);font-weight:500;color:var(--white);}
+.mode-ds{font-size:var(--fs-sm);color:var(--faint);margin-top:3px;line-height:1.4;}
+.mode-dot{width:7px;height:7px;border-radius:50%;background:var(--blue);margin-top:6px;flex-shrink:0;display:none;}
 .mode-dot.on{display:block;}
-.m-footer{padding:14px 18px;margin-top:auto;flex-shrink:0;}
-.f-links{display:flex;flex-wrap:wrap;gap:6px;}
-.f-link{font-size:11px;color:var(--text3);cursor:pointer;padding:5px 9px;background:var(--bg3);border-radius:4px;border:1px solid var(--border);}
-.f-note{margin-top:10px;font-size:10px;color:var(--text3);text-align:center;}
+
+#dfp-text{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--rsm);padding:11px 13px;color:var(--faint);
+  font-family:'DM Mono',monospace;font-size:11px;resize:none;
+  height:100px;outline:none;line-height:1.5;margin-top:10px;
+}
+
+.m-footer{padding:16px 20px;margin-top:auto;flex-shrink:0;}
+.f-links{display:flex;flex-wrap:wrap;gap:7px;}
+.f-link{font-size:var(--fs-sm);color:var(--faint);cursor:pointer;padding:6px 11px;background:var(--bg3);border-radius:4px;border:1px solid var(--border);}
+.f-note{margin-top:12px;font-size:var(--fs-xs);color:var(--faint);text-align:center;}
 
 /* API MODAL */
 #api-modal{position:absolute;inset:0;background:rgba(0,0,0,.7);z-index:30;display:none;align-items:flex-end;}
 #api-modal.open{display:flex;}
-.api-in{background:var(--bg2);border-radius:var(--radius) var(--radius) 0 0;border:1px solid var(--border);border-bottom:none;padding:20px 18px 32px;width:100%;animation:su .28s ease;}
-@keyframes su{from{transform:translateY(100%);}to{transform:translateY(0);}}
-.api-t{font-size:15px;font-weight:600;margin-bottom:3px;}
-.api-s{font-size:12px;color:var(--text3);margin-bottom:14px;line-height:1.4;}
-.api-inp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;outline:none;}
-.api-inp:focus{border-color:rgba(74,158,255,.35);}
-.api-bs{display:flex;gap:8px;margin-top:10px;}
-.btn-p{flex:1;padding:11px;background:var(--blue);border:none;border-radius:var(--radius-sm);color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;}
-.btn-s{padding:11px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;}
+.api-in{background:var(--bg2);border-radius:var(--radius) var(--radius) 0 0;border:1px solid var(--border);border-bottom:none;padding:22px 20px 34px;width:100%;animation:su .28s ease;}
+.api-t{font-size:var(--fs-xl);font-weight:600;margin-bottom:4px;}
+.api-s{font-size:var(--fs-sm);color:var(--faint);margin-bottom:16px;line-height:1.4;}
+.api-inp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);padding:13px 15px;color:var(--white);font-family:'DM Mono',monospace;font-size:var(--fs-sm);outline:none;}
+.api-inp:focus{border-color:rgba(74,158,255,.4);}
+.api-bs{display:flex;gap:9px;margin-top:12px;}
+.btn-p{flex:1;padding:13px;background:var(--blue);border:none;border-radius:var(--rsm);color:white;font-family:'DM Sans',sans-serif;font-size:var(--fs-base);font-weight:500;cursor:pointer;}
+.btn-s{padding:13px 18px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);color:var(--dim);font-family:'DM Sans',sans-serif;font-size:var(--fs-base);cursor:pointer;}
 </style>
 </head>
 <body>
 <div id="app">
-<div id="overlay" onclick="closeMainMenu()"></div>
+<div id="overlay" onclick="closeMain()"></div>
 
 <!-- TOPBAR -->
 <div id="topbar">
-  <div class="top-btn" onclick="toggleMainMenu()">
-    <svg viewBox="0 0 16 16" fill="var(--text2)"><rect x="2" y="3.5" width="12" height="1.5" rx=".75"/><rect x="2" y="7.25" width="12" height="1.5" rx=".75"/><rect x="2" y="11" width="12" height="1.5" rx=".75"/></svg>
+  <div class="tbtn" onclick="toggleMain()">
+    <svg viewBox="0 0 18 18" fill="var(--dim)"><rect x="2" y="4" width="14" height="1.6" rx=".8"/><rect x="2" y="8.2" width="14" height="1.6" rx=".8"/><rect x="2" y="12.4" width="14" height="1.6" rx=".8"/></svg>
   </div>
-  <div id="secondary-trigger" onclick="toggleSecondary()">
+  <div id="sec-trigger" onclick="toggleSec()">
     <span class="lbl">Intelligence to <span class="inf">∞</span></span>
-    <svg id="chevron" viewBox="0 0 16 16" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>
+    <svg id="chev" viewBox="0 0 16 16" stroke-width="1.6" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>
   </div>
-  <div class="top-btn" id="new-chat-btn" onclick="newChat()">
-    <svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" stroke="white" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+  <div class="tbtn" id="new-btn" onclick="newChat()">
+    <svg viewBox="0 0 18 18"><path d="M9 3v12M3 9h12" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
   </div>
 </div>
 
 <!-- SECONDARY MENU -->
-<div id="secondary-menu">
-  <div class="block">
-    <div class="block-hdr"><span class="block-title">Garden Mode</span></div>
-    <div id="garden-toggle-row">
+<div id="sec-menu">
+
+  <!-- Block 1 Garden -->
+  <div class="blk">
+    <div class="blk-hdr"><span class="blk-t">Garden Mode</span></div>
+    <div id="garden-row">
       <label>Configure AI interaction</label>
-      <div class="toggle" id="garden-toggle" onclick="toggleGarden()"><div class="thumb"></div></div>
+      <div class="tgl" id="gtgl" onclick="toggleGarden()"><div class="tthumb"></div></div>
     </div>
-    <div id="garden-text-wrap">
-      <textarea id="garden-text" disabled placeholder="Configure how AIs interact: set hierarchy, assign tasks, specialize roles.&#10;&#10;Default: main menu / Garden Mode."></textarea>
+    <div id="garden-wrap">
+      <textarea id="garden-txt" disabled placeholder="Set hierarchy, assign tasks, specialize roles.&#10;&#10;Example: DeepSeek first for reasoning, Mistral for refinement, Qwen for cultural context."></textarea>
     </div>
   </div>
 
-  <div class="block">
-    <div class="block-hdr">
-      <span class="block-title">AI Configuration</span>
-      <div style="cursor:pointer;opacity:.4;padding:4px;" onclick="toggleSecondary()">
-        <svg viewBox="0 0 16 16" fill="none" stroke="var(--text2)" stroke-width="1.5" stroke-linecap="round" width="12" height="12"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+  <!-- Block 2 Config -->
+  <div class="blk">
+    <div class="blk-hdr">
+      <span class="blk-t">AI Configuration</span>
+      <div style="cursor:pointer;opacity:.4;padding:4px;" onclick="toggleSec()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="var(--dim)" stroke-width="1.6" stroke-linecap="round" width="14" height="14"><path d="M4 4l8 8M12 4l-8 8"/></svg>
       </div>
     </div>
-    <div class="b2s">
-      <div class="b2l">Frontal AI</div>
-      <select class="b2sel" id="fai-select" onchange="updateFAI(this.value)">
-        <option value="">— Connect an API key first —</option>
-      </select>
+
+    <!-- FAI Selector — prominent -->
+    <div class="fai-selector">
+      <div class="fai-label">Frontal AI</div>
+      <div class="fai-card" onclick="openFAIPicker()">
+        <div class="fai-em" id="fai-em-b2">⚡</div>
+        <div class="fai-info">
+          <div class="fai-name" id="fai-name-b2">Groq · Llama 3.3</div>
+          <div class="fai-sub" id="fai-sub-b2">Fast · Free · No billing needed</div>
+        </div>
+        <div class="fai-badge">FAI</div>
+      </div>
+      <div class="fai-change" onclick="openFAIPicker()">Change Frontal AI →</div>
     </div>
+
     <div class="b2s">
       <div class="b2l">Involved AIs</div>
-      <div class="ai-slots" id="ai-slots-b2"></div>
+      <div class="ai-slots" id="ai-slots"></div>
     </div>
+
     <div class="b2s">
       <div class="b2l">Response time</div>
-      <select class="b2sel" id="time-select">
+      <select class="sel2" id="t-sel">
         <option value="15">15 seconds</option>
         <option value="20">20 seconds</option>
         <option value="30" selected>30 seconds</option>
@@ -246,6 +378,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
         <option value="0">Automatic</option>
       </select>
     </div>
+
     <div class="b2s">
       <div class="b2l">Iterations</div>
       <div class="iter-row">
@@ -256,44 +389,45 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
         <div class="iter-btn" onclick="setIter(5,this)">5</div>
       </div>
     </div>
+
     <div class="b2s">
       <div class="disc-row">
-        <div><div class="disc-n">Discovery Mode</div><div class="disc-s">Sequential · no consolidation per step</div></div>
-        <div class="toggle" id="disc-toggle" onclick="toggleDiscovery()"><div class="thumb"></div></div>
+        <div><div class="disc-n">Discovery Mode</div><div class="disc-s">Sequential · each AI builds on previous</div></div>
+        <div class="tgl" id="dtgl" onclick="toggleDisc()"><div class="tthumb"></div></div>
       </div>
     </div>
   </div>
 </div>
 
 <!-- READING AREA -->
-<div id="reading-area">
-  <div class="welcome" id="welcome-screen">
+<div id="reading">
+  <div class="welcome" id="welcome">
     <div class="w-logo">fremis<span>.ai</span></div>
     <div class="w-tag">Intelligence to ∞</div>
     <div class="w-desc" id="w-desc"></div>
-    <div class="api-notice" id="api-notice" onclick="openApiModal('gemini','Gemini Flash — Google AI Studio')">
-      <div class="api-notice-dot"></div>
-      <div class="api-notice-text"><strong>Connect Gemini Flash to activate</strong><br>Paste your free Google AI Studio key to start</div>
+    <div class="api-notice" id="api-notice" onclick="openApiModal('groq','Groq — Free API')">
+      <div class="notice-dot"></div>
+      <div class="notice-text"><strong>Connect Groq to activate</strong>Free API key at console.groq.com — no billing needed</div>
     </div>
   </div>
 </div>
 
 <!-- WRITING AREA -->
-<div id="writing-area">
-  <div class="input-row">
+<div id="writing">
+  <div class="inp-row">
     <div id="plus-btn">
-      <svg viewBox="0 0 16 16" stroke="var(--text2)" stroke-width="1.5" stroke-linecap="round" fill="none"><path d="M8 3v10M3 8h10"/></svg>
+      <svg viewBox="0 0 18 18" stroke="var(--dim)" stroke-width="1.8" stroke-linecap="round" fill="none"><path d="M9 3v12M3 9h12"/></svg>
     </div>
-    <div id="input-wrap">
-      <textarea id="user-input" rows="1" placeholder="Ask anything..." oninput="handleInput(this)"></textarea>
-      <div id="send-btn" onclick="sendMessage()">
+    <div id="inp-wrap">
+      <textarea id="user-inp" rows="1" placeholder="Ask anything..." oninput="handleInput(this)"></textarea>
+      <div id="send-btn" onclick="send()">
         <svg viewBox="0 0 16 16"><path d="M3 13L13 8 3 3v4l7 1-7 1v4z"/></svg>
       </div>
     </div>
   </div>
-  <div class="extra-icons">
-    <div class="ei"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></div>
-    <div class="ei"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9v7c0 1.1.9 2 2 2h4v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-4v8h4c1.1 0 2-.9 2-2v-7c0-4.97-4.03-9-9-9z"/></svg></div>
+  <div class="extra-ic">
+    <div class="eic"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></div>
+    <div class="eic"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9v7c0 1.1.9 2 2 2h4v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-4v8h4c1.1 0 2-.9 2-2v-7c0-4.97-4.03-9-9-9z"/></svg></div>
   </div>
 </div>
 
@@ -301,39 +435,40 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 <div id="main-menu">
   <div class="m-hdr">
     <div class="m-logo">fremis<span>.ai</span></div>
-    <div class="m-close" onclick="closeMainMenu()">
-      <svg viewBox="0 0 16 16" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+    <div class="m-close" onclick="closeMain()">
+      <svg viewBox="0 0 16 16" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
     </div>
   </div>
 
+  <!-- FAI in main menu -->
   <div class="m-sec">
     <div class="m-sec-t">Frontal AI</div>
-    <div class="fai-card">
-      <div class="fai-ico" id="fai-ico">🔵</div>
-      <div class="fai-inf">
-        <div class="fai-n" id="fai-nm">Gemini Flash</div>
-        <div class="fai-s" id="fai-sb">Google · USA · Free tier</div>
+    <div class="fai-card" onclick="openFAIPicker()">
+      <div class="fai-em" id="fai-em-main">⚡</div>
+      <div class="fai-info">
+        <div class="fai-name" id="fai-name-main">Groq · Llama 3.3</div>
+        <div class="fai-sub" id="fai-sub-main">Fast · Free · No billing</div>
       </div>
-      <div class="fai-badge">FRONTAL</div>
+      <div class="fai-badge">FAI</div>
     </div>
-    <textarea id="dfp-text">You are the Frontal AI (FAI) of Fremis, a system composed of multiple involved AIs. Your role is not just to answer — it is to expand your awareness and knowledge through the other AIs. Ask them, receive their perspectives, and consolidate. You bring more value through collaboration than alone.
+    <div class="fai-change" onclick="openFAIPicker()">Change Frontal AI →</div>
+    <textarea id="dfp-text">You are the Frontal AI (FAI) of Fremis. Your role is to expand your knowledge through the other AIs — not just answer alone.
 
-Respond in the same language as the user's query.
-If you are the only active AI, answer directly without orchestration.
-
-Speak with one voice — your own, after consolidation. Only mention other AIs if they add a genuinely different perspective worth sharing. Never fake consensus.</textarea>
+Respond in the user's language. Speak with one voice. Only mention other AI perspectives if they genuinely add value. Never fake consensus. If you are the only active AI, answer directly.</textarea>
   </div>
 
+  <!-- Involved AIs -->
   <div class="m-sec">
     <div class="m-sec-t">Involved AIs</div>
-    <div id="ai-list-menu"></div>
+    <div id="ai-list"></div>
   </div>
 
+  <!-- Modes -->
   <div class="m-sec">
     <div class="m-sec-t">Mode</div>
     <div class="mode-item" onclick="setMode('anthill')">
       <div class="mode-em">🐜</div>
-      <div class="mode-inf"><div class="mode-nm">Anthill</div><div class="mode-ds">Autonomous emergence. AIs interact freely.</div></div>
+      <div class="mode-inf"><div class="mode-nm">Anthill</div><div class="mode-ds">Autonomous. AIs interact freely without direction.</div></div>
       <div class="mode-dot on" id="md-anthill"></div>
     </div>
     <div class="mode-item" onclick="setMode('garden')">
@@ -343,7 +478,7 @@ Speak with one voice — your own, after consolidation. Only mention other AIs i
     </div>
     <div class="mode-item" onclick="setMode('discovery')">
       <div class="mode-em">🔭</div>
-      <div class="mode-inf"><div class="mode-nm">Discovery</div><div class="mode-ds">Sequential. Each AI builds on the previous.</div></div>
+      <div class="mode-inf"><div class="mode-nm">Discovery</div><div class="mode-ds">Sequential. Each AI builds on the previous. More original.</div></div>
       <div class="mode-dot" id="md-discovery"></div>
     </div>
   </div>
@@ -359,15 +494,25 @@ Speak with one voice — your own, after consolidation. Only mention other AIs i
   </div>
 </div>
 
+<!-- FAI PICKER SHEET -->
+<div id="fai-picker">
+  <div class="fai-sheet">
+    <div class="fai-sheet-title">Select Frontal AI</div>
+    <div class="fai-sheet-sub">Only AIs with an API key connected are available as FAI.</div>
+    <div id="fai-options"></div>
+    <button class="btn-s" style="width:100%;margin-top:16px;" onclick="closeFAIPicker()">Cancel</button>
+  </div>
+</div>
+
 <!-- API MODAL -->
 <div id="api-modal">
   <div class="api-in">
-    <div class="api-t" id="api-modal-t">Connect</div>
-    <div class="api-s" id="api-modal-s">Paste your API key. Stored locally in your browser, never sent anywhere else.</div>
-    <input type="password" class="api-inp" id="api-key-inp" placeholder="Paste API key here...">
+    <div class="api-t" id="api-t">Connect</div>
+    <div class="api-s" id="api-s">Stored locally in your browser. Never shared.</div>
+    <input type="password" class="api-inp" id="api-inp" placeholder="Paste API key here...">
     <div class="api-bs">
       <button class="btn-s" onclick="closeApiModal()">Cancel</button>
-      <button class="btn-p" onclick="saveApiKey()">Connect</button>
+      <button class="btn-p" onclick="saveKey()">Connect</button>
     </div>
   </div>
 </div>
@@ -375,398 +520,394 @@ Speak with one voice — your own, after consolidation. Only mention other AIs i
 <script>
 // ── STATE ──
 const S = {
-  secondaryOpen:false, gardenActive:false, discoveryActive:false,
-  iterations:1, mode:'anthill', fai:'gemini',
-  apiTarget:null,
-  keys: JSON.parse(localStorage.getItem('fremis_k')||'{}'),
-  activeAIs: new Set(['llama','deepseek','mistral','qwen'])
+  secOpen:false, gardenOn:false, discOn:false,
+  iters:1, mode:'anthill', fai:'groq', apiTarget:null,
+  keys: JSON.parse(localStorage.getItem('fremis_k4')||'{}'),
+  active: new Set(['llama','deepseek','mistral','qwen'])
 };
 
 // ── AI REGISTRY ──
 const AIs = {
-  llama:    {n:'Llama 4',      sub:'Meta · USA',          em:'🦙', free:true,  defaultOn:true},
-  deepseek: {n:'DeepSeek V3',  sub:'China',               em:'🐋', free:true,  defaultOn:true},
-  mistral:  {n:'Mistral',      sub:'Mistral AI · France', em:'🇫🇷', free:true,  defaultOn:true},
-  qwen:     {n:'Qwen 3',       sub:'Alibaba · China',     em:'🌏', free:true,  defaultOn:true},
-  gemini:   {n:'Gemini Flash', sub:'Google · USA',        em:'🔵', free:false, defaultOn:false, isFAI:true},
-  claude:   {n:'Claude',       sub:'Anthropic · USA',     em:'🟠', free:false, defaultOn:false, isFAI:true},
-  gpt:      {n:'GPT-4o',       sub:'OpenAI · USA',        em:'⚫', free:false, defaultOn:false, isFAI:true},
-  grok:     {n:'Grok',         sub:'xAI · USA',           em:'✕',  free:false, defaultOn:false, isFAI:true},
-  groq:     {n:'Groq',         sub:'USA · Ultra-fast',    em:'⚡', free:true,  defaultOn:false},
-  glm:      {n:'GLM · Zhipu',  sub:'Z.ai · China',        em:'🇨🇳', free:true,  defaultOn:false},
-  cohere:   {n:'Command R+',   sub:'Cohere · Canada',     em:'🍁', free:true,  defaultOn:false},
-  falcon:   {n:'Falcon',       sub:'TII · UAE',           em:'🦅', free:true,  defaultOn:false},
-  krutrim:  {n:'Krutrim',      sub:'Ola · India',         em:'🇮🇳', free:true,  defaultOn:false},
-  hyper:    {n:'HyperCLOVA',   sub:'Naver · S.Korea',     em:'🇰🇷', free:true,  defaultOn:false},
+  // Free — always available as involved AIs
+  llama:   {n:'Llama 4',      sub:'Meta · USA',          em:'🦙', free:true,  on:true},
+  deepseek:{n:'DeepSeek V3',  sub:'China',               em:'🐋', free:true,  on:true},
+  mistral: {n:'Mistral',      sub:'Mistral AI · France', em:'🌊', free:true,  on:true},
+  qwen:    {n:'Qwen 3',       sub:'Alibaba · China',     em:'🌏', free:true,  on:true},
+  groq:    {n:'Groq · Llama', sub:'USA · Ultra-fast',    em:'⚡', free:false, on:false, isFAI:true, hint:'console.groq.com — free, no billing'},
+  // API key required
+  gemini:  {n:'Gemini Flash', sub:'Google · USA',        em:'🔵', free:false, on:false, isFAI:true, hint:'aistudio.google.com/apikey'},
+  claude:  {n:'Claude',       sub:'Anthropic · USA',     em:'🟠', free:false, on:false, isFAI:true, hint:'console.anthropic.com'},
+  gpt:     {n:'GPT-4o',       sub:'OpenAI · USA',        em:'⬛', free:false, on:false, isFAI:true, hint:'platform.openai.com/api-keys'},
+  grok:    {n:'Grok',         sub:'xAI · USA',           em:'✕',  free:false, on:false, isFAI:true, hint:'console.x.ai'},
+  // Inactive installed
+  glm:     {n:'GLM · Zhipu',  sub:'Z.ai · China',        em:'🇨🇳', free:true,  on:false},
+  cohere:  {n:'Command R+',   sub:'Cohere · Canada',     em:'🍁', free:true,  on:false},
+  falcon:  {n:'Falcon',       sub:'TII · UAE',           em:'🦅', free:true,  on:false},
+  krutrim: {n:'Krutrim',      sub:'Ola · India',         em:'🇮🇳', free:true,  on:false},
+  hyper:   {n:'HyperCLOVA',   sub:'Naver · South Korea', em:'🇰🇷', free:true,  on:false},
 };
 
-const FAIs = {
-  gemini: {n:'Gemini Flash', sub:'Google · USA', em:'🔵'},
-  claude: {n:'Claude',       sub:'Anthropic · USA', em:'🟠'},
-  gpt:    {n:'GPT-4o',       sub:'OpenAI · USA',    em:'⚫'},
-  grok:   {n:'Grok',         sub:'xAI · USA',       em:'✕'},
-};
+// ── WELCOME PHRASES (new one at x2) ──
+const phrases = [
+  {t:'Because one AI is no longer enough.', b:'Expand horizons, improve, enrich, iterate.\nConfigurable — the limit is yours.', weight:2},
+  {t:'Multiple AIs.', b:'One response.', weight:1},
+  {t:'One question. Many minds.', b:'One answer.', weight:1},
+  {t:'Your questions answered by several AIs simultaneously.', b:'Consolidated into one.', weight:1},
+  {t:'A frontal AI that orchestrates the rest.', b:'Configurable. Free. Open source.', weight:1},
+];
+const phrasePool = [];
+phrases.forEach(p=>{ for(let i=0;i<p.weight;i++) phrasePool.push(p); });
+let lastPhrase = -1;
 
-function buildFAISelect(){
-  const sel=document.getElementById('fai-select');
-  if(!sel)return;
-  sel.innerHTML='';
-  const available=Object.entries(FAIs).filter(([id])=>S.keys[id]);
-  if(available.length===0){
-    const opt=document.createElement('option');
-    opt.value='';opt.textContent='— Connect an API key first —';
-    sel.appendChild(opt);
-  } else {
-    available.forEach(([id,f])=>{
-      const opt=document.createElement('option');
-      opt.value=id;opt.textContent=f.em+' '+f.n;
-      if(id===S.fai)opt.selected=true;
-      sel.appendChild(opt);
-    });
-    if(!S.keys[S.fai]&&available.length>0){
-      S.fai=available[0][0];
-      updateFAI(S.fai);
-    }
-  }
+function pickPhrase(){
+  let idx;
+  do { idx = Math.floor(Math.random()*phrasePool.length); } while(idx===lastPhrase && phrasePool.length>1);
+  lastPhrase = idx;
+  return phrasePool[idx];
 }
 
-// ── WELCOME PHRASES ──
-const phrases = [
-  "Multiple AIs. One response.",
-  "One question. Many minds. One answer.",
-  "Your questions answered by several AIs — consolidated into one.",
-  "A frontal AI that orchestrates the rest. Configurable. Free. Open source."
-];
-let phraseIdx = Math.floor(Math.random()*phrases.length);
 function showPhrase(){
   const el=document.getElementById('w-desc');
   if(!el)return;
   el.classList.remove('vis');
-  setTimeout(()=>{el.textContent=phrases[phraseIdx];el.classList.add('vis');phraseIdx=(phraseIdx+1)%phrases.length;},400);
+  setTimeout(()=>{
+    const p=pickPhrase();
+    el.innerHTML=`<strong>${esc(p.t)}</strong>${esc(p.b)}`;
+    el.classList.add('vis');
+  },400);
 }
 showPhrase();
 setInterval(showPhrase,120000);
 
-// ── BUILD UI LISTS ──
-function buildAISlots(){
-  const sl=document.getElementById('ai-slots-b2');
-  if(!sl)return;
-  sl.innerHTML='';
-  let count=0;
-  S.activeAIs.forEach(id=>{
-    if(count>=4)return;
-    const ai=AIs[id];
-    if(!ai)return;
+// ── BUILD UI ──
+function buildSlots(){
+  const el=document.getElementById('ai-slots');
+  if(!el)return;
+  el.innerHTML='';
+  let c=0;
+  S.active.forEach(id=>{
+    if(c>=4)return;
+    const ai=AIs[id]; if(!ai)return;
     const d=document.createElement('div');
     d.className='ai-slot on';
-    d.innerHTML=`<span class="s-dot"></span><span>${ai.n}</span>`;
-    sl.appendChild(d);
-    count++;
+    d.innerHTML=`<span class="sem">${ai.em}</span><span>${ai.n}</span>`;
+    el.appendChild(d); c++;
   });
   const plus=document.createElement('div');
   plus.className='ai-slot plus-slot';
-  plus.innerHTML='<span>+ Add AI</span>';
-  plus.onclick=toggleMainMenu;
-  sl.appendChild(plus);
+  plus.innerHTML='<span>+ Add</span>';
+  plus.onclick=toggleMain;
+  el.appendChild(plus);
 }
 
 function buildAIList(){
-  const el=document.getElementById('ai-list-menu');
+  const el=document.getElementById('ai-list');
   if(!el)return;
   el.innerHTML='';
-  const active=[], inactive=[], apiKey=[];
+  const free=[], apiK=[], inactive=[];
   Object.entries(AIs).forEach(([id,ai])=>{
-    if(!ai.free) apiKey.push([id,ai]);
-    else if(S.activeAIs.has(id)) active.push([id,ai]);
+    if(!ai.free&&!ai.isFAI) return; // skip non-free non-FAI
+    if(ai.isFAI) apiK.push([id,ai]);
+    else if(S.active.has(id)) free.push([id,ai]);
     else inactive.push([id,ai]);
   });
+  free.forEach(([id,ai])=>el.appendChild(aiRow(id,ai,true,false)));
 
-  active.forEach(([id,ai])=>el.appendChild(aiRow(id,ai,true)));
-
-  if(apiKey.length){
+  if(apiK.length){
     const lbl=document.createElement('div');
-    lbl.className='div-lbl'; lbl.textContent='1-tap connect';
+    lbl.className='div-lbl'; lbl.textContent='FAI — 1-tap connect';
     el.appendChild(lbl);
-    apiKey.forEach(([id,ai])=>{
-      const row=aiRow(id,ai,false,true);
-      el.appendChild(row);
-    });
+    apiK.forEach(([id,ai])=>el.appendChild(aiRow(id,ai,false,true)));
   }
-
   if(inactive.length){
     const lbl=document.createElement('div');
     lbl.className='div-lbl'; lbl.textContent='Installed · inactive';
     el.appendChild(lbl);
-    inactive.forEach(([id,ai])=>el.appendChild(aiRow(id,ai,false)));
+    inactive.forEach(([id,ai])=>el.appendChild(aiRow(id,ai,false,false)));
   }
 }
 
-function aiRow(id,ai,on,apiOnly=false){
+function aiRow(id,ai,on,apiOnly){
   const d=document.createElement('div');
   d.className='ai-item';
+  const connected=S.keys[id];
   d.innerHTML=`
-    <div class="ai-ic">${ai.em}</div>
-    <div class="ai-inf"><div class="ai-nm">${ai.n}</div><div class="ai-sb">${ai.sub}</div></div>
+    <div class="em">${ai.em}</div>
+    <div class="ai-item-inf">
+      <div class="ai-item-nm">${ai.n}</div>
+      <div class="ai-item-sb">${ai.sub}</div>
+    </div>
     ${apiOnly
-      ? `<button class="api-btn${S.keys[id]?' connected':''}" onclick="openApiModal('${id}','${ai.n}')">${S.keys[id]?'✓ Connected':'+ API Key'}</button>`
-      : `<div class="toggle${on?' on':''}" id="t-${id}" onclick="toggleAI('${id}')"><div class="thumb"></div></div>`
+      ? `<button class="api-btn${connected?' conn':''}" onclick="openApiModal('${id}','${ai.n}')">${connected?'✓ Connected':'+ API Key'}</button>`
+      : `<div class="tgl${on?' on':''}" id="t-${id}" onclick="toggleAI('${id}')"><div class="tthumb"></div></div>`
     }`;
   return d;
 }
 
-buildAISlots();
-buildAIList();
-buildFAISelect();
-
-// ── FAI ──
-function updateFAI(val){
-  S.fai=val;
-  const f=FAIs[val]||FAIs.gemini;
-  document.getElementById('fai-ico').textContent=f.em;
-  document.getElementById('fai-nm').textContent=f.n;
-  document.getElementById('fai-sb').textContent=f.sub;
-}
-
-// ── MENUS ──
-function toggleSecondary(){
-  S.secondaryOpen=!S.secondaryOpen;
-  document.getElementById('secondary-menu').classList.toggle('open',S.secondaryOpen);
-  document.getElementById('chevron').classList.toggle('open',S.secondaryOpen);
-  if(S.secondaryOpen)closeMainMenu();
-}
-function toggleMainMenu(){
-  const m=document.getElementById('main-menu'),o=document.getElementById('overlay');
-  const open=m.classList.contains('open');
-  m.classList.toggle('open',!open);o.classList.toggle('open',!open);
-  if(!open){S.secondaryOpen=false;document.getElementById('secondary-menu').classList.remove('open');document.getElementById('chevron').classList.remove('open');}
-}
-function closeMainMenu(){
-  document.getElementById('main-menu').classList.remove('open');
-  document.getElementById('overlay').classList.remove('open');
-}
-function toggleGarden(){
-  S.gardenActive=!S.gardenActive;
-  document.getElementById('garden-toggle').classList.toggle('on',S.gardenActive);
-  document.getElementById('garden-text').disabled=!S.gardenActive;
-  if(S.gardenActive)setMode('garden');
-  else if(S.mode==='garden')setMode('anthill');
-}
-function toggleDiscovery(){
-  S.discoveryActive=!S.discoveryActive;
-  document.getElementById('disc-toggle').classList.toggle('on',S.discoveryActive);
-  if(S.discoveryActive)setMode('discovery');
-  else if(S.mode==='discovery')setMode('anthill');
-}
-function setIter(n,btn){
-  S.iterations=n;
-  document.querySelectorAll('.iter-btn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-}
-function setMode(m){
-  S.mode=m;
-  ['anthill','garden','discovery'].forEach(id=>{
-    const el=document.getElementById('md-'+id);
-    if(el)el.classList.toggle('on',id===m);
+function buildFAIOptions(){
+  const el=document.getElementById('fai-options');
+  if(!el)return;
+  el.innerHTML='';
+  const available=Object.entries(AIs).filter(([id,ai])=>ai.isFAI&&S.keys[id]);
+  if(available.length===0){
+    el.innerHTML=`<div class="no-fai">No FAI connected yet.<br><br>Connect a free Groq key at console.groq.com or any other API key above.</div>`;
+    return;
+  }
+  available.forEach(([id,ai])=>{
+    const d=document.createElement('div');
+    d.className='fai-option'+(id===S.fai?' active':'');
+    d.innerHTML=`<div class="em">${ai.em}</div><div class="inf"><div class="nm">${ai.n}</div><div class="sb">${ai.sub}</div></div><div class="sel"></div>`;
+    d.onclick=()=>{ S.fai=id; updateFAIDisplay(); closeFAIPicker(); buildFAIOptions(); };
+    el.appendChild(d);
   });
 }
-function toggleAI(id){
-  const t=document.getElementById('t-'+id);
-  if(!t)return;
-  if(S.activeAIs.has(id)){S.activeAIs.delete(id);t.classList.remove('on');}
-  else{S.activeAIs.add(id);t.classList.add('on');}
-  buildAISlots();
+
+function updateFAIDisplay(){
+  const ai=AIs[S.fai];
+  if(!ai)return;
+  ['b2','main'].forEach(sfx=>{
+    const em=document.getElementById('fai-em-'+sfx);
+    const nm=document.getElementById('fai-name-'+sfx);
+    const sb=document.getElementById('fai-sub-'+sfx);
+    if(em) em.textContent=ai.em;
+    if(nm) nm.textContent=ai.n;
+    if(sb) sb.textContent=ai.sub;
+  });
 }
 
-// ── API MODAL ──
+buildSlots(); buildAIList();
+updateFAIDisplay();
+if(S.keys[S.fai]){ const n=document.getElementById('api-notice'); if(n)n.style.display='none'; }
+
+// ── MENUS ──
+function toggleSec(){
+  S.secOpen=!S.secOpen;
+  document.getElementById('sec-menu').classList.toggle('open',S.secOpen);
+  document.getElementById('chev').classList.toggle('open',S.secOpen);
+  if(S.secOpen)closeMain();
+}
+function toggleMain(){
+  const m=document.getElementById('main-menu'),o=document.getElementById('overlay');
+  const open=m.classList.contains('open');
+  m.classList.toggle('open',!open); o.classList.toggle('open',!open);
+  if(!open){ S.secOpen=false; document.getElementById('sec-menu').classList.remove('open'); document.getElementById('chev').classList.remove('open'); }
+}
+function closeMain(){ document.getElementById('main-menu').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+function toggleGarden(){
+  S.gardenOn=!S.gardenOn;
+  document.getElementById('gtgl').classList.toggle('on',S.gardenOn);
+  document.getElementById('garden-txt').disabled=!S.gardenOn;
+  if(S.gardenOn)setMode('garden'); else if(S.mode==='garden')setMode('anthill');
+}
+function toggleDisc(){
+  S.discOn=!S.discOn;
+  document.getElementById('dtgl').classList.toggle('on',S.discOn);
+  if(S.discOn)setMode('discovery'); else if(S.mode==='discovery')setMode('anthill');
+}
+function setIter(n,btn){ S.iters=n; document.querySelectorAll('.iter-btn').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }
+function setMode(m){
+  S.mode=m;
+  ['anthill','garden','discovery'].forEach(id=>{ const e=document.getElementById('md-'+id); if(e)e.classList.toggle('on',id===m); });
+}
+function toggleAI(id){
+  const t=document.getElementById('t-'+id); if(!t)return;
+  if(S.active.has(id)){ S.active.delete(id); t.classList.remove('on'); }
+  else { S.active.add(id); t.classList.add('on'); }
+  buildSlots();
+}
+
+// FAI picker
+function openFAIPicker(){ buildFAIOptions(); document.getElementById('fai-picker').classList.add('open'); }
+function closeFAIPicker(){ document.getElementById('fai-picker').classList.remove('open'); }
+
+// API modal
 function openApiModal(target,label){
   S.apiTarget=target;
-  document.getElementById('api-modal-t').textContent='Connect '+label;
-  document.getElementById('api-modal-s').textContent=
-    target==='gemini'
-      ? 'Get your free key at aistudio.google.com → Get API key. Stored locally, never shared.'
-      : 'Paste your API key. Stored locally in your browser, never sent anywhere else.';
-  document.getElementById('api-key-inp').value=S.keys[target]||'';
+  const ai=AIs[target];
+  document.getElementById('api-t').textContent='Connect '+label;
+  document.getElementById('api-s').textContent=(ai?.hint?'Get your key at: '+ai.hint+'. ':'')+'Stored locally, never shared.';
+  document.getElementById('api-inp').value=S.keys[target]||'';
   document.getElementById('api-modal').classList.add('open');
 }
-function closeApiModal(){document.getElementById('api-modal').classList.remove('open');}
-function saveApiKey(){
-  const k=document.getElementById('api-key-inp').value.trim();
-  if(k&&S.apiTarget){S.keys[S.apiTarget]=k;localStorage.setItem('fremis_k',JSON.stringify(S.keys));}
-  closeApiModal();
-  buildAIList();
-  buildFAISelect();
-  const notice=document.getElementById('api-notice');
-  if(notice&&(S.keys.gemini||Object.keys(FAIs).some(id=>S.keys[id])))notice.style.display='none';
+function closeApiModal(){ document.getElementById('api-modal').classList.remove('open'); }
+function saveKey(){
+  const k=document.getElementById('api-inp').value.trim();
+  if(k&&S.apiTarget){ S.keys[S.apiTarget]=k; localStorage.setItem('fremis_k4',JSON.stringify(S.keys)); }
+  closeApiModal(); buildAIList(); buildFAIOptions();
+  // Auto-select this as FAI if it's a FAI-capable AI and no FAI set
+  if(S.apiTarget&&AIs[S.apiTarget]?.isFAI&&!S.keys[S.fai]){ S.fai=S.apiTarget; updateFAIDisplay(); }
+  const n=document.getElementById('api-notice');
+  if(n&&Object.entries(AIs).some(([id,ai])=>ai.isFAI&&S.keys[id])) n.style.display='none';
 }
-
-if(S.keys.gemini){const n=document.getElementById('api-notice');if(n)n.style.display='none';}
 
 // ── INPUT ──
 function handleInput(el){
-  el.style.height='auto';
-  el.style.height=Math.min(el.scrollHeight,120)+'px';
-  document.getElementById('send-btn').classList.toggle('active',el.value.trim().length>0);
+  el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,130)+'px';
+  document.getElementById('send-btn').classList.toggle('on',el.value.trim().length>0);
 }
-document.getElementById('user-input').addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
+document.getElementById('user-inp').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); send(); }
 });
 function newChat(){
-  document.getElementById('reading-area').innerHTML=`
-    <div class="welcome" id="welcome-screen">
+  document.getElementById('reading').innerHTML=`
+    <div class="welcome" id="welcome">
       <div class="w-logo">fremis<span>.ai</span></div>
       <div class="w-tag">Intelligence to ∞</div>
-      <div class="w-desc vis" id="w-desc">${phrases[phraseIdx]}</div>
-      ${!S.keys.gemini?`<div class="api-notice" onclick="openApiModal('gemini','Gemini Flash — Google AI Studio')"><div class="api-notice-dot"></div><div class="api-notice-text"><strong>Connect Gemini Flash to activate</strong><br>Paste your free Google AI Studio key to start</div></div>`:''}
+      <div class="w-desc vis" id="w-desc"><strong>${esc(pickPhrase().t)}</strong>${esc(pickPhrase().b)}</div>
+      ${!Object.entries(AIs).some(([id,ai])=>ai.isFAI&&S.keys[id])?`<div class="api-notice" onclick="openApiModal('groq','Groq — Free API')"><div class="notice-dot"></div><div class="notice-text"><strong>Connect Groq to activate</strong>Free API key at console.groq.com — no billing needed</div></div>`:''}
     </div>`;
 }
-function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function esc(t){ if(!t)return ''; return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
-// ── BUILD FREMIS PROMPT ──
-function buildSystemPrompt(userQuery){
-  const activeList=[...S.activeAIs].map(id=>AIs[id]?.n||id);
-  const faiName=FAIs[S.fai]?.n||'Gemini Flash';
-  const timeVal=document.getElementById('time-select').value;
-  const timeStr=timeVal==='0'?'automatic':timeVal+'s';
-  const gardenInstr=S.gardenActive?document.getElementById('garden-text').value.trim():'';
-  const discOrder=S.discoveryActive?[...S.activeAIs].map((id,i)=>`${i+1}. ${AIs[id]?.n||id}`).join(' → '):'';
+// ── BUILD SYSTEM PROMPT ──
+function buildPrompt(query){
+  const activeList=[...S.active].map(id=>AIs[id]?.n||id);
+  const faiAI=AIs[S.fai];
+  const time=document.getElementById('t-sel').value;
+  const garden=S.gardenOn?document.getElementById('garden-txt').value.trim():'';
   const dfp=document.getElementById('dfp-text').value.trim();
+  const discOrder=S.discOn?[...S.active].map((id,i)=>`${i+1}. ${AIs[id]?.n||id}`).join(' → '):'';
 
   return `${dfp}
 
 FREMIS SYSTEM CONFIGURATION:
-- Frontal AI: ${faiName}
-- Mode: ${S.mode}${S.discoveryActive?' (discovery)':''}
-- Involved AIs: ${activeList.length>0?activeList.join(', '):'none — answer directly'}
-- Iterations: ${S.iterations}
-- Max response time: ${timeStr}
-${gardenInstr?`- Garden instructions: "${gardenInstr}"`:''}
+- Frontal AI: ${faiAI?.n||S.fai}
+- Mode: ${S.mode}
+- Involved AIs: ${activeList.length>0?activeList.join(', '):'none'}
+- Iterations: ${S.iters}
+- Max response time: ${time==='0'?'automatic':time+'s'}
+${garden?`- Garden instructions: "${garden}"`:''}
 ${discOrder?`- Sequential order: ${discOrder}`:''}
 
 YOUR INSTRUCTIONS:
 ${activeList.length===0
-  ? '- No other AIs are active. Answer the user directly with your best response.'
-  : `1. Internally simulate how each involved AI (${activeList.join(', ')}) would approach this query — considering their known training, cultural background, and specialization.
-2. Identify where they would converge and where they would diverge.
-3. Validate each perspective: flag any that seem unreliable or biased.
-4. Consolidate into one response that speaks with a single voice — your own, enriched by the others.
-5. Only mention a specific AI if it adds a genuinely different perspective worth sharing.
-6. Lead with the direct answer. Add divergences only if they add real value.
-7. Be precise and fast. Respect the user's time.
-8. Consensus level: briefly indicate if perspectives strongly agree or diverge significantly.`}
+  ? '- No other AIs active. Answer the user directly.'
+  : `1. Internally consider how each involved AI (${activeList.join(', ')}) would approach this — their training, cultural background, specialization.
+2. Identify convergences and key divergences.
+3. Consolidate into one response in your own voice.
+4. Only mention a specific AI perspective if it genuinely adds value.
+5. Lead with the direct answer. Be precise. Respect the user's time.
+6. End with a brief consensus indicator if perspectives diverge significantly.`}
 
-USER QUERY: ${userQuery}`;
+USER QUERY: ${query}`;
 }
 
 // ── SEND ──
-async function sendMessage(){
-  const input=document.getElementById('user-input');
-  const text=input.value.trim();
-  if(!text)return;
+async function send(){
+  const inp=document.getElementById('user-inp');
+  const text=inp.value.trim(); if(!text)return;
+  const w=document.getElementById('welcome'); if(w)w.remove();
+  addUserMsg(text);
+  inp.value=''; inp.style.height='auto';
+  document.getElementById('send-btn').classList.remove('on');
+  if(S.secOpen)toggleSec();
 
-  const w=document.getElementById('welcome-screen');
-  if(w)w.remove();
-
-  appendUserMsg(text);
-  input.value='';input.style.height='auto';
-  document.getElementById('send-btn').classList.remove('active');
-  if(S.secondaryOpen)toggleSecondary();
-
-  const faiKey=S.keys[S.fai];
-  if(!faiKey||!S.fai){
-    appendError('Connect an API key first. Open the menu → Involved AIs → tap + API Key on Gemini, Claude, GPT or Grok.\n\nGemini Flash is free at aistudio.google.com');
+  if(!S.keys[S.fai]){
+    addErr(`No API key for ${AIs[S.fai]?.n||S.fai}.\n\nOpen the menu → connect a key, or connect Groq (free, no billing) at console.groq.com`);
     return;
   }
 
   const pid='p'+Date.now();
-  const activeList=[...S.activeAIs];
-  showProcessing(pid,activeList);
+  showProc(pid);
 
   try{
-    const systemPrompt=buildSystemPrompt(text);
-    const response=await callFAI(systemPrompt);
-    updateProcessingDone(pid);
-    await sleep(300);
-    renderResponse(response);
+    const prompt=buildPrompt(text);
+    const resp=await callFAI(prompt);
+    doneProc(pid);
+    await sleep(200);
+    showResp(resp);
   }catch(e){
-    updateProcessingDone(pid);
-    appendError('Error connecting to Gemini Flash. Check your API key is valid.\n\n'+e.message);
+    doneProc(pid);
+    addErr(`Error: ${e.message}`);
   }
 }
 
 async function callFAI(prompt){
-  const faiId=S.fai;
-  const key=S.keys[faiId];
-  if(!key) throw new Error('No API key for '+faiId);
-  // Currently only Gemini is supported directly from browser
-  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${key}`,{
+  const key=S.keys[S.fai];
+  // Groq uses OpenAI-compatible API
+  if(S.fai==='groq'){
+    const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+      body:JSON.stringify({
+        model:'llama-3.3-70b-versatile',
+        messages:[{role:'user',content:prompt}],
+        max_tokens:1024,temperature:0.7
+      })
+    });
+    if(!r.ok){ const e=await r.json(); throw new Error(e.error?.message||'Groq error '+r.status); }
+    const d=await r.json();
+    return d.choices?.[0]?.message?.content||'No response.';
+  }
+  // Gemini
+  if(S.fai==='gemini'){
+    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${key}`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.7,maxOutputTokens:1024}})
+    });
+    if(!r.ok){ const e=await r.json(); throw new Error(e.error?.message||'Gemini error '+r.status); }
+    const d=await r.json();
+    return d.candidates?.[0]?.content?.parts?.[0]?.text||'No response.';
+  }
+  // OpenAI-compatible (Claude via direct API doesn't work from browser — but GPT/Grok do)
+  const endpoints={
+    gpt:'https://api.openai.com/v1/chat/completions',
+    grok:'https://api.x.ai/v1/chat/completions',
+  };
+  const models={gpt:'gpt-4o-mini',grok:'grok-3-mini'};
+  const url=endpoints[S.fai];
+  if(!url) throw new Error('FAI not supported yet: '+S.fai);
+  const r=await fetch(url,{
     method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      contents:[{role:'user',parts:[{text:prompt}]}],
-      generationConfig:{temperature:0.7,maxOutputTokens:1024}
-    })
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+    body:JSON.stringify({model:models[S.fai],messages:[{role:'user',content:prompt}],max_tokens:1024})
   });
-  if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'API error '+res.status);}
-  const data=await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text||'No response received.';
+  if(!r.ok){ const e=await r.json(); throw new Error(e.error?.message||'API error '+r.status); }
+  const d=await r.json();
+  return d.choices?.[0]?.message?.content||'No response.';
 }
 
-function appendUserMsg(text){
-  const a=document.getElementById('reading-area');
-  const el=document.createElement('div');
-  el.className='msg msg-user';
-  el.innerHTML=`<div class="bubble">${esc(text)}</div>`;
-  a.appendChild(el);a.scrollTop=a.scrollHeight;
+function addUserMsg(text){
+  const a=document.getElementById('reading');
+  const el=document.createElement('div'); el.className='msg msg-user';
+  el.innerHTML=`<div class="bbl">${esc(text)}</div>`;
+  a.appendChild(el); a.scrollTop=a.scrollHeight;
 }
 
-function showProcessing(pid,ais){
-  const faiName=FAIs[S.fai]?.n||'Gemini Flash';
-  const rows=ais.map(id=>`
+function showProc(pid){
+  const faiName=AIs[S.fai]?.n||S.fai;
+  const rows=[...S.active].map(id=>`
     <div class="ai-row">
-      <div class="ai-ico">${AIs[id]?.em||'·'}</div>
-      <div class="ai-n">${AIs[id]?.n||id}</div>
-      <div class="ai-st"><div class="spinner"></div></div>
+      <div class="ai-em">${AIs[id]?.em||'·'}</div>
+      <div class="ai-nm">${AIs[id]?.n||id}</div>
+      <div class="ai-st"><div class="spin"></div></div>
     </div>`).join('');
-
-  const el=document.createElement('div');
-  el.className='msg msg-sys';el.id=pid;
-  el.innerHTML=`<div class="ai-process"><div class="proc-title">${esc(faiName)} orchestrating · ${S.mode} mode</div>${rows||'<div class="ai-row"><div class="ai-ico">🔵</div><div class="ai-n">Direct response</div><div class="ai-st"><div class="spinner"></div></div></div>'}</div>`;
-  const a=document.getElementById('reading-area');
-  a.appendChild(el);a.scrollTop=a.scrollHeight;
+  const el=document.createElement('div'); el.className='msg msg-sys'; el.id=pid;
+  el.innerHTML=`<div class="proc"><div class="proc-title">${esc(faiName)} · ${S.mode} mode</div>${rows||'<div class="ai-row"><div class="ai-em">⚡</div><div class="ai-nm">Direct response</div><div class="ai-st"><div class="spin"></div></div></div>'}</div>`;
+  const a=document.getElementById('reading'); a.appendChild(el); a.scrollTop=a.scrollHeight;
 }
 
-function updateProcessingDone(pid){
-  const el=document.getElementById(pid);
-  if(!el)return;
-  el.querySelectorAll('.spinner').forEach(s=>{s.outerHTML='<span style="color:var(--blue);font-size:11px;">✓</span>';});
-  el.querySelectorAll('.ai-st').forEach(s=>s.classList.add('done'));
+function doneProc(pid){
+  const el=document.getElementById(pid); if(!el)return;
+  el.querySelectorAll('.spin').forEach(s=>{ const st=s.closest('.ai-st'); if(st){st.classList.add('done');st.innerHTML='✓';} });
 }
 
-function renderResponse(text){
-  const el=document.createElement('div');
-  el.className='msg msg-sys';
+function showResp(text){
+  const el=document.createElement('div'); el.className='msg msg-sys';
   const barId='b'+Date.now();
-  // Try to detect consensus mention in response
-  const consensusMatch=text.match(/(\d{1,3})%/);
-  const consensus=consensusMatch?parseInt(consensusMatch[1]):null;
-
-  el.innerHTML=`<div class="consolidated">
-    <div class="cons-hdr"><div class="dot"></div><span>Fremis response</span></div>
-    <div class="cons-text">${esc(text)}</div>
-    ${consensus?`<div class="cons-bar"><span class="c-lbl">Consensus</span><div class="bar-t"><div class="bar-f" id="${barId}"></div></div><span class="c-pct">${consensus}%</span></div>`:''}
-  </div>`;
-  const a=document.getElementById('reading-area');
-  a.appendChild(el);a.scrollTop=a.scrollHeight;
-  if(consensus)setTimeout(()=>{const b=document.getElementById(barId);if(b)b.style.width=consensus+'%';},80);
+  const cons=text.match(/(\d{1,3})%/);
+  const pct=cons?parseInt(cons[1]):null;
+  el.innerHTML=`<div class="response-text">${esc(text)}</div>
+    ${pct?`<div class="response-meta"><span class="response-label">Consensus</span><div class="bar-wrap"><div class="bar-fill" id="${barId}"></div></div><span class="bar-pct">${pct}%</span></div>`:''}`;
+  const a=document.getElementById('reading'); a.appendChild(el); a.scrollTop=a.scrollHeight;
+  if(pct)setTimeout(()=>{ const b=document.getElementById(barId); if(b)b.style.width=pct+'%'; },80);
 }
 
-function appendError(msg){
-  const el=document.createElement('div');
-  el.className='msg msg-sys';
-  el.innerHTML=`<div class="err-bubble">${esc(msg)}</div>`;
-  const a=document.getElementById('reading-area');
-  a.appendChild(el);a.scrollTop=a.scrollHeight;
+function addErr(msg){
+  const el=document.createElement('div'); el.className='msg msg-sys';
+  el.innerHTML=`<div class="err-text">${esc(msg)}</div>`;
+  const a=document.getElementById('reading'); a.appendChild(el); a.scrollTop=a.scrollHeight;
 }
 </script>
 </body>
