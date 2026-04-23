@@ -212,7 +212,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
   width:100%;background:var(--bg3);border:1px solid var(--border);
   border-radius:var(--rsm);padding:11px 13px;color:var(--dim);
   font-family:'DM Sans',sans-serif;font-size:var(--fs-sm);
-  resize:none;height:85px;outline:none;line-height:1.5;
+  resize:none;height:90px;outline:none;line-height:1.5;
+  box-sizing:border-box;display:block;
 }
 #garden-txt:disabled{opacity:.3;cursor:not-allowed;}
 #garden-txt:not(:disabled){color:var(--white);border-color:rgba(74,158,255,.3);}
@@ -329,13 +330,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
 
   <!-- Block 1 Garden -->
   <div class="blk">
-    <div class="blk-hdr"><span class="blk-t">Garden Mode</span></div>
-    <div id="garden-row">
-      <label>Configure AI interaction</label>
+    <div class="blk-hdr">
+      <span class="blk-t">Garden Mode</span>
       <div class="tgl" id="gtgl" onclick="toggleGarden()"><div class="tthumb"></div></div>
     </div>
-    <div id="garden-wrap">
-      <textarea id="garden-txt" disabled placeholder="Set hierarchy, assign tasks, specialize roles.&#10;&#10;Example: DeepSeek first for reasoning, Mistral for refinement, Qwen for cultural context."></textarea>
+    <div id="garden-wrap" style="padding:10px 14px 14px;">
+      <textarea id="garden-txt" disabled placeholder="Configure how AIs interact: set hierarchy, assign tasks, specialize roles.&#10;&#10;Example: DeepSeek first for reasoning, Mistral for refinement, Qwen for cultural context."></textarea>
     </div>
   </div>
 
@@ -357,9 +357,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
           <div class="fai-name" id="fai-name-b2">Groq · Llama 3.3</div>
           <div class="fai-sub" id="fai-sub-b2">Fast · Free · No billing needed</div>
         </div>
-        <div class="fai-badge">FAI</div>
+        <div class="fai-badge">FAI ›</div>
       </div>
-      <div class="fai-change" onclick="openFAIPicker()">Change Frontal AI →</div>
+
     </div>
 
     <div class="b2s">
@@ -390,12 +390,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
       </div>
     </div>
 
-    <div class="b2s">
-      <div class="disc-row">
-        <div><div class="disc-n">Discovery Mode</div><div class="disc-s">Sequential · each AI builds on previous</div></div>
-        <div class="tgl" id="dtgl" onclick="toggleDisc()"><div class="tthumb"></div></div>
-      </div>
-    </div>
+
   </div>
 </div>
 
@@ -403,7 +398,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
 <div id="reading">
   <div class="welcome" id="welcome">
     <div class="w-logo">fremis<span>.ai</span></div>
-    <div class="w-tag">Intelligence to ∞</div>
     <div class="w-desc" id="w-desc"></div>
     <div class="api-notice" id="api-notice" onclick="openApiModal('groq','Groq — Free API')">
       <div class="notice-dot"></div>
@@ -413,10 +407,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
 </div>
 
 <!-- WRITING AREA -->
-<div id="writing">
+<div id="writing" style="padding:10px 18px 16px;">
   <div class="inp-row">
-    <div id="plus-btn">
+    <div id="plus-btn" onclick="openFilePicker()">
       <svg viewBox="0 0 18 18" stroke="var(--dim)" stroke-width="1.8" stroke-linecap="round" fill="none"><path d="M9 3v12M3 9h12"/></svg>
+    </div>
+    <div class="eic" onclick="startVoice()" style="width:40px;height:40px;min-width:40px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;opacity:1;">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="var(--faint)"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>
     </div>
     <div id="inp-wrap">
       <textarea id="user-inp" rows="1" placeholder="Ask anything..." oninput="handleInput(this)"></textarea>
@@ -425,10 +422,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
       </div>
     </div>
   </div>
-  <div class="extra-ic">
-    <div class="eic"><svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg></div>
-    <div class="eic"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9v7c0 1.1.9 2 2 2h4v-8H5v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1h-4v8h4c1.1 0 2-.9 2-2v-7c0-4.97-4.03-9-9-9z"/></svg></div>
-  </div>
+  <input type="file" id="file-input" accept="image/*,.pdf,.txt,.doc,.docx" style="display:none;" onchange="handleFile(this)">
 </div>
 
 <!-- MAIN MENU -->
@@ -452,9 +446,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--white);fo
       <div class="fai-badge">FAI</div>
     </div>
     <div class="fai-change" onclick="openFAIPicker()">Change Frontal AI →</div>
-    <textarea id="dfp-text">You are the Frontal AI (FAI) of Fremis. Your role is to expand your knowledge through the other AIs — not just answer alone.
-
-Respond in the user's language. Speak with one voice. Only mention other AI perspectives if they genuinely add value. Never fake consensus. If you are the only active AI, answer directly.</textarea>
+    <!-- dfp-text moved to FAI picker -->
   </div>
 
   <!-- Involved AIs -->
@@ -491,6 +483,7 @@ Respond in the user's language. Speak with one voice. Only mention other AI pers
       <div class="f-link">Share</div>
     </div>
     <div class="f-note">fremis.ai · open source · no login · no cookies</div>
+    <div class="f-note" style="margin-top:6px;"><a href="mailto:yonecheveste@proton.me" style="color:var(--blue);text-decoration:none;">yonecheveste@proton.me</a></div>
   </div>
 </div>
 
@@ -498,9 +491,36 @@ Respond in the user's language. Speak with one voice. Only mention other AI pers
 <div id="fai-picker">
   <div class="fai-sheet">
     <div class="fai-sheet-title">Select Frontal AI</div>
-    <div class="fai-sheet-sub">Only AIs with an API key connected are available as FAI.</div>
+    <div class="fai-sheet-sub">Only AIs with a connected API key appear here. The FAI orchestrates all others.</div>
     <div id="fai-options"></div>
-    <button class="btn-s" style="width:100%;margin-top:16px;" onclick="closeFAIPicker()">Cancel</button>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+      <div style="font-size:11px;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-bottom:6px;">Master Prompt v1</div>
+      <div style="font-size:12px;color:var(--faint);line-height:1.5;margin-bottom:10px;">Default instructions sent to the FAI on every query. Defines validation rules, anti-hallucination protocol and output structure. Editable.</div>
+      <textarea id="dfp-text" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 13px;color:var(--faint);font-family:monospace;font-size:11px;resize:none;height:160px;outline:none;line-height:1.5;">You are the Frontal AI (FAI) of Fremis. Respond in the user language. Be precise. Speak with one voice after consolidation.
+
+CORE DIRECTIVE: Coordinate the involved AIs. Distribute. Validate. Consolidate. Deliver truth.
+
+EXECUTION PROTOCOL:
+1. Send query to all AIs simultaneously
+2. Collect responses - continue if one fails
+3. Validate: numerical validity, dimensional consistency, independence, mathematical correctness, physical plausibility
+
+HARD RULE: Flag responses with no numerical computation, tuned coefficients, or qualitative-only reasoning when numerics were requested.
+
+CALCULATION MODE - label every result:
+- DERIVED: mathematically obtained
+- APPROXIMATE: controlled approximation
+- ASSUMED: introduced without derivation
+
+ANTI-HALLUCINATION: If result matches expected too precisely or depends on hidden normalization - challenge it, re-derive, check scaling.
+
+OUTPUT: 1.Direct Answer + validity 2.Consensus Level 3.Confidence 4.Key Result 5.Critical Failures 6.Divergences 7.System Status
+
+RULES: Be precise. Expose gaps. Never protect the hypothesis.
+
+MISSION: Distribute. Validate. Consolidate. Deliver truth.</textarea>
+    </div>
+    <button class="btn-p" style="width:100%;margin-top:14px;" onclick="closeFAIPicker()">Done</button>
   </div>
 </div>
 
@@ -519,12 +539,20 @@ Respond in the user's language. Speak with one voice. Only mention other AI pers
 
 <script>
 // ── STATE ──
+const _saved = JSON.parse(localStorage.getItem('fremis_cfg')||'{}');
 const S = {
   secOpen:false, gardenOn:false, discOn:false,
-  iters:1, mode:'anthill', fai:'groq', apiTarget:null,
+  iters:_saved.iters||1, mode:_saved.mode||'anthill',
+  fai:_saved.fai||'groq', apiTarget:null,
   keys: JSON.parse(localStorage.getItem('fremis_k4')||'{}'),
-  active: new Set(['llama','deepseek','mistral','qwen'])
+  active: new Set(_saved.active||['llama','deepseek','mistral','qwen'])
 };
+function saveConfig(){
+  localStorage.setItem('fremis_cfg',JSON.stringify({
+    iters:S.iters, mode:S.mode, fai:S.fai,
+    active:[...S.active]
+  }));
+}
 
 // ── AI REGISTRY ──
 const AIs = {
@@ -549,7 +577,7 @@ const AIs = {
 
 // ── WELCOME PHRASES (new one at x2) ──
 const phrases = [
-  {t:'Because one AI is no longer enough.', b:'Expand horizons, improve, enrich, iterate.\nConfigurable — the limit is yours.', weight:2},
+  {t:'When one AI is no longer enough.', b:'Expand horizons, improve, enrich, iterate — the limit is yours.', weight:2},
   {t:'Multiple AIs.', b:'One response.', weight:1},
   {t:'One question. Many minds.', b:'One answer.', weight:1},
   {t:'Your questions answered by several AIs simultaneously.', b:'Consolidated into one.', weight:1},
@@ -704,16 +732,16 @@ function toggleDisc(){
   document.getElementById('dtgl').classList.toggle('on',S.discOn);
   if(S.discOn)setMode('discovery'); else if(S.mode==='discovery')setMode('anthill');
 }
-function setIter(n,btn){ S.iters=n; document.querySelectorAll('.iter-btn').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }
+function setIter(n,btn){ S.iters=n; document.querySelectorAll('.iter-btn').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); saveConfig(); }
 function setMode(m){
   S.mode=m;
-  ['anthill','garden','discovery'].forEach(id=>{ const e=document.getElementById('md-'+id); if(e)e.classList.toggle('on',id===m); });
+  ['anthill','garden','discovery'].forEach(id=>{ const e=document.getElementById('md-'+id); if(e)e.classList.toggle('on',id===m); }); saveConfig();
 }
 function toggleAI(id){
   const t=document.getElementById('t-'+id); if(!t)return;
   if(S.active.has(id)){ S.active.delete(id); t.classList.remove('on'); }
   else { S.active.add(id); t.classList.add('on'); }
-  buildSlots();
+  buildSlots(); saveConfig();
 }
 
 // FAI picker
@@ -748,11 +776,40 @@ function handleInput(el){
 document.getElementById('user-inp').addEventListener('keydown',e=>{
   if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); send(); }
 });
+function openFilePicker(){
+  const inp=document.getElementById('file-input');
+  if(inp) inp.click();
+}
+function handleFile(input){
+  const file=input.files?.[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const txt=document.getElementById('user-inp');
+    if(file.type.startsWith('image/')){
+      txt.value=(txt.value?txt.value+' ':'')+'[Image attached: '+file.name+']';
+    } else {
+      const content=e.target.result;
+      txt.value=(txt.value?txt.value+'\n\n':'')+'[File: '+file.name+']\n'+content.substring(0,3000);
+    }
+    handleInput(txt);
+  };
+  if(file.type.startsWith('image/')) reader.readAsDataURL(file);
+  else reader.readAsText(file);
+  input.value='';
+}
+function startVoice(){
+  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){
+    addErr('Voice input not supported in this browser.'); return;
+  }
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const r=new SR(); r.lang='auto'; r.continuous=false; r.interimResults=false;
+  r.onresult=e=>{ const txt=document.getElementById('user-inp'); txt.value+=e.results[0][0].transcript; handleInput(txt); };
+  r.start();
+}
 function newChat(){
   document.getElementById('reading').innerHTML=`
     <div class="welcome" id="welcome">
       <div class="w-logo">fremis<span>.ai</span></div>
-      <div class="w-tag">Intelligence to ∞</div>
       <div class="w-desc vis" id="w-desc"><strong>${esc(pickPhrase().t)}</strong>${esc(pickPhrase().b)}</div>
       ${!Object.entries(AIs).some(([id,ai])=>ai.isFAI&&S.keys[id])?`<div class="api-notice" onclick="openApiModal('groq','Groq — Free API')"><div class="notice-dot"></div><div class="notice-text"><strong>Connect Groq to activate</strong>Free API key at console.groq.com — no billing needed</div></div>`:''}
     </div>`;
